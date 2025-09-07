@@ -7,12 +7,12 @@ data class GetCartResponseData(
     val items: List<GetCartResponseItemData>
 ) {
     data class GetCartResponseItemData(
-        val id: Int,
+        val id: Long,
         val checked: Int,
         val name: String,
         val user_color: String,
         val checked_at: String?,
-        val product_id: Int,
+        val product_id: Long,
     ) {
         fun toProductData() = ProductData(
             id = id,

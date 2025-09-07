@@ -18,7 +18,7 @@ interface ApiService {
 
     @GET("get_list")
     suspend fun getProducts(
-        @Query("cart") cartId: Int
+        @Query("cart") cartId: Long
     ): Response<GetCartResponseData>
 
     @POST("add_to_cart")

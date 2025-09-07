@@ -2,7 +2,9 @@ package com.kopim.productlist.data.model.datasource
 
 import android.util.Log
 import com.kopim.productlist.data.model.database.DataBaseConnection
+import com.kopim.productlist.data.model.database.DatabaseConnectionInterface
 import com.kopim.productlist.data.model.network.ListNetworkConnection
+import com.kopim.productlist.data.model.network.ListNetworkConnectionInterface
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.ProductListData
 import kotlinx.coroutines.CoroutineScope
@@ -18,12 +20,12 @@ import kotlinx.coroutines.launch
 
 const val TAG = "ListDataSource"
 
-class ListDataSource(private val dbc: DataBaseConnection, private val nc: ListNetworkConnection) :
+class ListDataSource(private val dbc: DatabaseConnectionInterface, private val nc: ListNetworkConnectionInterface) :
     ListDataSourceInterface {
 
     private var cartObserverJob: Job? = null
 
-    override suspend fun listSubscribe(id: Int, updateDelay: Long): StateFlow<ProductListData?> {
+    override suspend fun listSubscribe(id: Long, updateDelay: Long): StateFlow<ProductListData?> {
         cartObserverJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
                 listUpdate(id)
@@ -49,15 +51,15 @@ class ListDataSource(private val dbc: DataBaseConnection, private val nc: ListNe
         Log.i(TAG, "Unsubscribed from list")
     }
 
-    override suspend fun listUpdate(id: Int) {
+    override suspend fun listUpdate(id: Long) {
         nc.getCart(id)
     }
 
-    override suspend fun addProduct(product: String, listId: Int): Unit {
+    override suspend fun addProduct(product: String, listId: Long) {
         nc.addProduct(listId, product)
     }
 
-    override suspend fun checkProduct(id: Int, checked: Boolean): Unit {
+    override suspend fun checkProduct(id: Long, checked: Boolean) {
         nc.checkProduct(id, checked)
     }
 

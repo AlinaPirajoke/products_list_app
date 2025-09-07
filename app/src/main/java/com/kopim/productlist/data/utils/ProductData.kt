@@ -6,12 +6,12 @@ import com.kopim.productlist.data.model.database.entities.ListItemDbEntity
 import com.kopim.productlist.data.model.database.entities.ProductDbEntity
 
 data class ProductData(
-    val id: Int,
+    val id: Long,
     val creatorColor: String,
     val name: String,
     val completed: Boolean,
     val checkedAt: String?,
-    val productId: Int = 0,
+    val productId: Long = 0,
 ){
     fun toProductUiData() = ProductUiData(
         id = this.id,
@@ -21,7 +21,7 @@ data class ProductData(
     )
 
     fun toListItemDbEntity(cartId: Long, productId: Long) = ListItemDbEntity(
-        id = this.id.toLong(),
+        id = this.id,
         checked = this.completed,
         product = productId,
         color = this.creatorColor,
@@ -30,7 +30,7 @@ data class ProductData(
     )
 
     fun toProductDbEntity() = ProductDbEntity(
-        id = this.productId.toLong(),
+        id = this.productId,
         name = this.name,
         mentions = 1,
     )

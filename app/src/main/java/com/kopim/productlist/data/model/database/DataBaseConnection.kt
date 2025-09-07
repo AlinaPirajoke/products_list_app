@@ -1,6 +1,7 @@
 package com.kopim.productlist.data.model.database
 
 import android.util.Log
+import androidx.lifecycle.liveData
 import com.kopim.productlist.data.model.database.entities.CartDbEntity
 import com.kopim.productlist.data.model.database.entities.dtos.ListProductsDTO.Companion.toProductListData
 import com.kopim.productlist.data.model.database.utils.AppDatabase
@@ -10,25 +11,26 @@ import com.kopim.productlist.data.utils.TimeHelper
 
 const val TAG = "DataBaseConnection"
 
-class DataBaseConnection(val database: AppDatabase) {
-    suspend fun getProductHints(query: String): List<Hint> =
+class DataBaseConnection(val database: AppDatabase): DatabaseConnectionInterface {
+    override suspend fun getProductHints(query: String): List<Hint> =
         database.productDao().getProductsByKey(query).map {
             Log.i(TAG, "Getting hints $it")
             it.toHint()
         }
 
-    suspend fun updateProducts(hints: List<Hint>) {
+    override suspend fun updateProducts(hints: List<Hint>) {
         Log.i(TAG, "Updating hints $hints")
         database.productDao().upsertAll(hints.map { it.toProductDbEntity() })
     }
 
-    suspend fun getCart(cartId: Int): ProductListData {
+    override suspend fun getCart(cartId: Long): ProductListData {
         return database.listItemDao().getItemsByCartAfterDate(cartId, TimeHelper.getYesterdayDate())
             .toProductListData()
     }
 
-    suspend fun updateCart(data: ProductListData, cartId: Int) {
+    override suspend fun updateCart(data: ProductListData, cartId: Long) {
         Log.i(TAG, "Updating cart $data")
+        database.listItemDao().cleanCart(cartId)
         data.items.forEach {
             database.cartDao().upsert(CartDbEntity(cartId.toLong(), null))
             database.productDao().upsert(it.toProductDbEntity())

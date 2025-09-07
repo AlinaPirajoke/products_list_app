@@ -95,11 +95,11 @@ class ListStore(
     }
 
     interface ListDataManager {
-        suspend fun listSubscribe(id: Int, updateDelay: Long): StateFlow<ProductListData?>
+        suspend fun listSubscribe(id: Long, updateDelay: Long): StateFlow<ProductListData?>
         fun listUnsubscribe(): Unit
-        suspend fun listUpdate(id: Int): Unit
-        suspend fun addProduct(name: String, listId: Int): Unit
-        suspend fun checkProduct(id: Int, checked: Boolean): Unit
+        suspend fun listUpdate(id: Long): Unit
+        suspend fun addProduct(name: String, listId: Long): Unit
+        suspend fun checkProduct(id: Long, checked: Boolean): Unit
         suspend fun getHints(query: String): MutableStateFlow<List<Hint>?>
     }
 }

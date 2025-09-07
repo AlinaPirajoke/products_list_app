@@ -1,12 +1,14 @@
 package com.kopim.productlist.data.di
 
 import com.kopim.productlist.data.model.database.DataBaseConnection
+import com.kopim.productlist.data.model.database.DatabaseConnectionInterface
 import com.kopim.productlist.data.model.database.SharedPreferencesManager
 import com.kopim.productlist.data.model.database.utils.AppDatabase
 import com.kopim.productlist.data.model.database.utils.DatabaseProvider
 import com.kopim.productlist.data.model.datasource.ListDataSource
 import com.kopim.productlist.data.model.datasource.ListDataSourceInterface
 import com.kopim.productlist.data.model.network.ListNetworkConnection
+import com.kopim.productlist.data.model.network.ListNetworkConnectionInterface
 import com.kopim.productlist.data.model.network.networksettings.ApiService
 import com.kopim.productlist.data.model.network.networksettings.OkHttpClientHelper
 import com.kopim.productlist.data.model.network.networksettings.RetrofitHelper
@@ -29,10 +31,10 @@ private fun Module.model(){
     single<ListDataSourceInterface> {
         ListDataSource(get(), get())
     }
-    single<DataBaseConnection> {
+    single<DatabaseConnectionInterface> {
         DataBaseConnection(get())
     }
-    single<ListNetworkConnection> {
+    single<ListNetworkConnectionInterface> {
         ListNetworkConnection(get(), get())
     }
 

@@ -3,7 +3,7 @@ package com.kopim.productlist.data.utils
 import androidx.compose.ui.graphics.Color
 
 data class ProductUiData(
-    val id: Int,
+    val id: Long,
     val creatorColor: Color,
     val text: String,
     val lineTrough: Boolean,

@@ -11,5 +11,5 @@ data class ProductDbEntity(
     val name: String,
     val mentions: Int,
 ) {
-    fun toHint() = Hint(id.toInt(), name, mentions)
+    fun toHint() = Hint(id, name, mentions)
 }

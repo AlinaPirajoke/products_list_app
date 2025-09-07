@@ -15,11 +15,10 @@ import kotlinx.coroutines.launch
 private const val TAG = "ListNetworkConnection"
 
 class ListNetworkConnection(
-    private val connection: ApiService,
-    private val spm: SharedPreferencesManager
-) {
-    val lastCartData: MutableStateFlow<ProductListData?> = MutableStateFlow(null)
-    private var token = spm.userToken
+    connection: ApiService,
+    spm: SharedPreferencesManager
+) : BaseNetworkConnection(connection, spm), ListNetworkConnectionInterface {
+    override val lastCartData: MutableStateFlow<ProductListData?> = MutableStateFlow(null)
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -28,40 +27,7 @@ class ListNetworkConnection(
         }
     }
 
-    private suspend fun <T> safeRequest(body: suspend () -> T?): T? {
-        try {
-            return body()
-        } catch (e: Exception) {
-            Log.e(TAG, "Safety request failed", e)
-            return null
-        }
-    }
-
-    private suspend fun checkLogin(): Boolean {
-        if (token == null) {
-            Log.w(TAG, "User's token is null!")
-            return loginUser()
-        }
-        return true
-    }
-
-    suspend fun loginUser(): Boolean =
-        safeRequest {
-            val response = connection.login()
-            if (response.isSuccessful) {
-                token = response.body()?.token
-                token?.let {
-                    spm.userToken = token
-                }
-                Log.i(TAG, "New user token: $token")
-                return@safeRequest true
-            }
-            Log.e(TAG, "Failed to login")
-            return@safeRequest false
-        } ?: false
-
-
-    suspend fun getCart(cartId: Int) =
+    override suspend fun getCart(cartId: Long) =
         safeRequest {
             if (checkLogin()) {
                 val response = connection.getProducts(cartId)
@@ -71,9 +37,9 @@ class ListNetworkConnection(
                     )
                 }
             }
-        }
+        } ?: Unit
 
-    suspend fun getHints(key: String): List<Hint>? =
+    override suspend fun getHints(key: String): List<Hint>? =
         safeRequest {
             if (checkLogin()) {
                 val response = connection.getHints(key)
@@ -86,7 +52,7 @@ class ListNetworkConnection(
         }
 
 
-    suspend fun addProduct(listId: Int, product: String) {
+    override suspend fun addProduct(listId: Long, product: String) {
         if (product.isEmpty()) return
 
         safeRequest {
@@ -101,7 +67,7 @@ class ListNetworkConnection(
         }
     }
 
-    suspend fun checkProduct(itemId: Int, checked: Boolean) =
+    override suspend fun checkProduct(itemId: Long, checked: Boolean) =
         safeRequest {
             if (checkLogin()) {
                 connection.checkProduct(
@@ -111,5 +77,5 @@ class ListNetworkConnection(
                     )
                 )
             }
-        }
+        } ?: Unit
 }

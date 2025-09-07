@@ -42,7 +42,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun CartScreen(
     contentPadding: PaddingValues,
-    listId: Int = 1,
+    listId: Long = 1,
     vm: ListViewModel = koinViewModel(),
 ) {
     val listState = rememberLazyListState()

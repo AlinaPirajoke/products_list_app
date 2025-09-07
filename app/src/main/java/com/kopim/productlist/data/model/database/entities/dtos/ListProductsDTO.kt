@@ -4,13 +4,13 @@ import com.kopim.productlist.data.utils.ProductData
 import com.kopim.productlist.data.utils.ProductListData
 
 data class ListProductsDTO(
-    val id: Int,
+    val id: Long,
     val product: String,
     val productId: Long,
     val checked: Boolean,
     val color: String
 ) {
-    fun toProductData() = ProductData(id, color, product, checked, null, productId.toInt())
+    fun toProductData() = ProductData(id, color, product, checked, null, productId)
 
     companion object {
         fun List<ListProductsDTO>.toProductListData() =

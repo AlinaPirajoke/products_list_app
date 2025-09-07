@@ -26,10 +26,10 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
     private val _state = MutableStateFlow(ListUiState())
     val state: StateFlow<ListUiState> = _state.asStateFlow()
 
-    private var listId: Int? = null
+    private var listId: Long? = null
     private var cartObserverJob: Job? = null
 
-    fun setListId(newListId: Int) {
+    fun setListId(newListId: Long) {
         listId = newListId
     }
 
@@ -97,7 +97,7 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
         cartObserverJob?.cancel()
     }
 
-    fun selectItem(itemId: Int, picked: Boolean? = null) {
+    fun selectItem(itemId: Long, picked: Boolean? = null) {
         val newCart = state.value.cart.toMutableList()
         val pickedElementIndex = newCart.indexOfFirst { it.id == itemId }
         val pickedElement = newCart[pickedElementIndex]
@@ -169,7 +169,7 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
         }
     }
 
-    fun onCheck(itemId: Int) {
+    fun onCheck(itemId: Long) {
         viewModelScope.launch {
             state.value.cart.firstOrNull { it.id == itemId }?.let { item ->
                 dataSource.checkProduct(itemId, !item.lineTrough)

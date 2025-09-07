@@ -15,6 +15,9 @@ interface ListItemDao {
     @Query("SELECT * FROM list_items")
     suspend fun getItems(): List<ListItemDbEntity>
 
+    @Query("DELETE FROM list_items WHERE cart = :cartId")
+    suspend fun cleanCart(cartId: Long)
+
     @Query("""SELECT +
             li.id as id,
             li.checked as checked,
@@ -26,5 +29,5 @@ interface ListItemDao {
             WHERE li.cart = :cartId AND (li.checkedAt > :date OR li.checkedAt IS NULL)
             ORDER BY li.checked ASC, li.id DESC
             """)
-    suspend fun getItemsByCartAfterDate(cartId: Int, date: String): List<ListProductsDTO>
+    suspend fun getItemsByCartAfterDate(cartId: Long, date: String): List<ListProductsDTO>
 }
