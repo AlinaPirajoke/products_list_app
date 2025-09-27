@@ -32,5 +32,6 @@ data class ListItemDbEntity(
     val product: Long,
     val checked: Boolean,
     val checkedAt: String?,
-    val color: String
+    val color: String,
+    val local: Boolean
 )

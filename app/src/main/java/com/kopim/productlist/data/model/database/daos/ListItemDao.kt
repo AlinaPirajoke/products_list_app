@@ -1,11 +1,11 @@
 package com.kopim.productlist.data.model.database.daos
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
 import com.kopim.productlist.data.model.database.entities.ListItemDbEntity
-import com.kopim.productlist.data.model.database.entities.dtos.ListProductsDTO
+import com.kopim.productlist.data.model.database.entities.dtos.ListProductDTO
+import com.kopim.productlist.data.model.database.entities.dtos.LocalItemDto
 
 @Dao
 interface ListItemDao {
@@ -29,5 +29,14 @@ interface ListItemDao {
             WHERE li.cart = :cartId AND (li.checkedAt > :date OR li.checkedAt IS NULL)
             ORDER BY li.checked ASC, li.id DESC
             """)
-    suspend fun getItemsByCartAfterDate(cartId: Long, date: String): List<ListProductsDTO>
+    suspend fun getItemsByCartAfterDate(cartId: Long, date: String): List<ListProductDTO>
+
+    @Query("""SELECT +
+            li.cart as cart,
+            li.checked as checked,
+            p.name as product
+            FROM list_items li
+            JOIN products p ON li.product = p.id
+            """)
+    suspend fun getLocalItems(): List<LocalItemDto>
 }

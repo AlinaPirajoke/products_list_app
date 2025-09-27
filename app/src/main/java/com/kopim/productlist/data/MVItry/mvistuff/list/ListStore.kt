@@ -7,6 +7,8 @@ import com.kopim.productlist.data.MVItry.mvistuff.StoreHelper
 import com.kopim.productlist.data.MVItry.mvistuff.list.ListStoreInterface.ListIntent
 import com.kopim.productlist.data.MVItry.mvistuff.list.ListStoreInterface.ListState
 import com.kopim.productlist.data.MVItry.mvistuff.list.ListStoreInterface.ListState.ProductState.ProductData.Data
+import com.kopim.productlist.data.model.network.utils.CheckedProductData
+import com.kopim.productlist.data.model.network.utils.NewProductData
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.ProductListData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -95,11 +97,12 @@ class ListStore(
     }
 
     interface ListDataManager {
+        suspend fun pushUpdates(): Unit
         suspend fun listSubscribe(id: Long, updateDelay: Long): StateFlow<ProductListData?>
         fun listUnsubscribe(): Unit
-        suspend fun listUpdate(id: Long): Unit
-        suspend fun addProduct(name: String, listId: Long): Unit
-        suspend fun checkProduct(id: Long, checked: Boolean): Unit
+        suspend fun fetchUpdates(id: Long): Unit
+        suspend fun addProducts(products: List<NewProductData>): Unit
+        suspend fun checkProduct(items: List<CheckedProductData>): Unit
         suspend fun getHints(query: String): MutableStateFlow<List<Hint>?>
     }
 }

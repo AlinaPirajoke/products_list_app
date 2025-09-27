@@ -1,5 +1,7 @@
 package com.kopim.productlist.data.model.network
 
+import com.kopim.productlist.data.model.network.utils.CheckedProductData
+import com.kopim.productlist.data.model.network.utils.NewProductData
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.ProductListData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +13,7 @@ interface ListNetworkConnectionInterface {
 
     suspend fun getHints(key: String): List<Hint>?
 
-    suspend fun addProduct(listId: Long, product: String)
+    suspend fun addProducts(products: List<NewProductData>)
 
-    suspend fun checkProduct(itemId: Long, checked: Boolean)
+    suspend fun checkProduct(items: List<CheckedProductData>)
 }

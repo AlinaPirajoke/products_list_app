@@ -1,11 +1,13 @@
 package com.kopim.productlist.data.model.datasource
 
 import android.util.Log
-import com.kopim.productlist.data.model.database.DataBaseConnection
 import com.kopim.productlist.data.model.database.DatabaseConnectionInterface
-import com.kopim.productlist.data.model.network.ListNetworkConnection
+import com.kopim.productlist.data.model.database.utils.ChangeType
 import com.kopim.productlist.data.model.network.ListNetworkConnectionInterface
+import com.kopim.productlist.data.model.network.utils.CheckedProductData
+import com.kopim.productlist.data.model.network.utils.NewProductData
 import com.kopim.productlist.data.utils.Hint
+import com.kopim.productlist.data.utils.LocalChange
 import com.kopim.productlist.data.utils.ProductListData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,15 +22,23 @@ import kotlinx.coroutines.launch
 
 const val TAG = "ListDataSource"
 
-class ListDataSource(private val dbc: DatabaseConnectionInterface, private val nc: ListNetworkConnectionInterface) :
+class ListDataSource(
+    private val dbc: DatabaseConnectionInterface,
+    private val nc: ListNetworkConnectionInterface
+) :
     ListDataSourceInterface {
 
     private var cartObserverJob: Job? = null
 
+    private suspend fun synchronize(listId: Long) {
+        pushUpdates()
+        fetchUpdates(listId)
+    }
+
     override suspend fun listSubscribe(id: Long, updateDelay: Long): StateFlow<ProductListData?> {
         cartObserverJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
-                listUpdate(id)
+                synchronize(id)
                 delay(updateDelay)
             }
         }
@@ -51,16 +61,31 @@ class ListDataSource(private val dbc: DatabaseConnectionInterface, private val n
         Log.i(TAG, "Unsubscribed from list")
     }
 
-    override suspend fun listUpdate(id: Long) {
+    override suspend fun addChange(change: LocalChange) {
+        dbc.addChange(change)
+    }
+
+    override suspend fun fetchUpdates(id: Long) {
         nc.getCart(id)
     }
 
-    override suspend fun addProduct(product: String, listId: Long) {
-        nc.addProduct(listId, product)
+    override suspend fun pushUpdates() {
+        val changes = dbc.getChanges()
+        if (changes.isNotEmpty()) {
+            addProducts(changes.filter { it.changeType == ChangeType.Create }
+                .map { it.toNewProductData() })
+            checkProduct(changes.filter { it.changeType == ChangeType.Check }
+                .map { it.toCheckedProductData() }
+            )
+        }
     }
 
-    override suspend fun checkProduct(id: Long, checked: Boolean) {
-        nc.checkProduct(id, checked)
+    override suspend fun addProducts(products: List<NewProductData>) {
+        nc.addProducts(products)
+    }
+
+    override suspend fun checkProduct(items: List<CheckedProductData>) {
+        nc.checkProduct(items)
     }
 
     override suspend fun getHints(query: String): MutableStateFlow<List<Hint>?> {

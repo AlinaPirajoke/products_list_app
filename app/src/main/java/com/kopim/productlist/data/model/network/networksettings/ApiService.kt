@@ -4,7 +4,7 @@ import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartReq
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartResponseData
 import com.kopim.productlist.data.model.network.apimodels.getcart.GetCartResponseData
 import com.kopim.productlist.data.model.network.apimodels.login.LoginResponseData
-import com.kopim.productlist.data.model.network.apimodels.removefromcart.RemoveFromCartRequest
+import com.kopim.productlist.data.model.network.apimodels.removefromcart.RemoveFromCartRequestData
 import com.kopim.productlist.data.model.network.apimodels.searchhints.SearchHintsResponseItemData
 import retrofit2.Response
 import retrofit2.http.Body
@@ -33,6 +33,6 @@ interface ApiService {
 
     @POST("remove_from_cart")
     suspend fun checkProduct(
-        @Body product: RemoveFromCartRequest
+        @Body product: RemoveFromCartRequestData
     )
 }

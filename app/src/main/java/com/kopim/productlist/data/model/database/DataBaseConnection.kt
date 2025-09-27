@@ -1,17 +1,17 @@
 package com.kopim.productlist.data.model.database
 
 import android.util.Log
-import androidx.lifecycle.liveData
 import com.kopim.productlist.data.model.database.entities.CartDbEntity
-import com.kopim.productlist.data.model.database.entities.dtos.ListProductsDTO.Companion.toProductListData
+import com.kopim.productlist.data.model.database.entities.dtos.ListProductDTO.Companion.toProductListData
 import com.kopim.productlist.data.model.database.utils.AppDatabase
 import com.kopim.productlist.data.utils.Hint
+import com.kopim.productlist.data.utils.LocalChange
 import com.kopim.productlist.data.utils.ProductListData
 import com.kopim.productlist.data.utils.TimeHelper
 
 const val TAG = "DataBaseConnection"
 
-class DataBaseConnection(val database: AppDatabase): DatabaseConnectionInterface {
+class DataBaseConnection(val database: AppDatabase) : DatabaseConnectionInterface {
     override suspend fun getProductHints(query: String): List<Hint> =
         database.productDao().getProductsByKey(query).map {
             Log.i(TAG, "Getting hints $it")
@@ -34,7 +34,18 @@ class DataBaseConnection(val database: AppDatabase): DatabaseConnectionInterface
         data.items.forEach {
             database.cartDao().upsert(CartDbEntity(cartId.toLong(), null))
             database.productDao().upsert(it.toProductDbEntity())
-            database.listItemDao().upsert(it.toListItemDbEntity(cartId.toLong(), it.productId.toLong()))
+            database.listItemDao()
+                .upsert(it.toListItemDbEntity(cartId.toLong(), it.productId.toLong()))
+        }
+    }
+
+    override suspend fun addChange(change: LocalChange) {
+        database.localChangeDao().upsert(change.toLocalChangeEntity())
+    }
+
+    override suspend fun getChanges(): List<LocalChange> {
+        return database.localChangeDao().getChanges().map {
+            it.toLocalChange()
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.kopim.productlist.data.model.database
 
 import com.kopim.productlist.data.utils.Hint
+import com.kopim.productlist.data.utils.LocalChange
 import com.kopim.productlist.data.utils.ProductListData
 
 interface DatabaseConnectionInterface {
@@ -11,4 +12,8 @@ interface DatabaseConnectionInterface {
     suspend fun getCart(cartId: Long): ProductListData
 
     suspend fun updateCart(data: ProductListData, cartId: Long)
+
+    suspend fun addChange(change: LocalChange)
+
+    suspend fun getChanges(): List<LocalChange>
 }

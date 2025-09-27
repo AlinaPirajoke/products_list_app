@@ -87,7 +87,7 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
         viewModelScope.launch {
             Log.d(TAG, "Update list")
             listId?.let { id ->
-                dataSource.listUpdate(id)
+                dataSource.fetchUpdates(id)
             }
         }
     }

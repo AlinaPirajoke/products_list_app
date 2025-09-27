@@ -13,7 +13,7 @@ class DataUpdater(appContext: Context, workerParams: WorkerParameters, private v
 
     override suspend fun doWork(): Result {
         Log.i(TAG,  "Updating data via work manager")
-        dataSource.listUpdate(1)
+        dataSource.fetchUpdates(1)
         return Result.success()
     }
 }
