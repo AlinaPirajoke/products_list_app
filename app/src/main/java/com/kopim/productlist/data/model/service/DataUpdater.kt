@@ -6,7 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.kopim.productlist.data.model.datasource.ListDataSource
 
-const val TAG = "DataUpdater"
+private const val TAG = "DataUpdater"
 
 class DataUpdater(appContext: Context, workerParams: WorkerParameters, private val dataSource: ListDataSource) :
     CoroutineWorker(appContext, workerParams) {

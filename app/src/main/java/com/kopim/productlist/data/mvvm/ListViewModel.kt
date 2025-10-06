@@ -8,6 +8,7 @@ import com.kopim.productlist.data.model.datasource.ListDataSource
 import com.kopim.productlist.data.model.datasource.ListDataSourceInterface
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.ListScreenMode
+import com.kopim.productlist.data.utils.LocalChange
 import com.kopim.productlist.data.utils.ProductListData
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -51,7 +52,7 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
     }
 
     private fun updateCart(newCartData: ProductListData) {
-        val updatedData = newCartData.items.map { newItem ->
+        val updatedData = newCartData.usualItems.map { newItem ->
             val sameItem = state.value.cart.firstOrNull { oldItem -> oldItem.id == newItem.id }
             sameItem?.let {
                 return@map sameItem.withUpdatedData(newItem)
@@ -62,7 +63,8 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
 
         _state.update { state ->
             state.copy(
-                cart = updatedData
+                cart = updatedData,
+                localProducts = newCartData.localItems
             )
         }
     }
@@ -139,7 +141,13 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
     fun onNewProductConfirm(productName: String?) {
         listId?.let { id ->
             viewModelScope.launch {
-                dataSource.addProduct(productName ?: state.value.newProductFieldValue.text, id)
+                dataSource.addChange(
+                    change = LocalChange.AdditionChange(
+                        name = productName ?: state.value.newProductFieldValue.text,
+                        cartId = id
+                    ),
+                    listId = id
+                )
                 delay(ADDITION_LIST_DELAY)
                 onNewProductFieldValueChange("")
                 updateList()
@@ -172,7 +180,13 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
     fun onCheck(itemId: Long) {
         viewModelScope.launch {
             state.value.cart.firstOrNull { it.id == itemId }?.let { item ->
-                dataSource.checkProduct(itemId, !item.lineTrough)
+                dataSource.addChange(
+                    change = LocalChange.CheckChange(
+                        checked = !item.lineTrough,
+                        itemId = itemId
+                    ),
+                    listId = listId ?: return@launch
+                )
             }
             selectItem(itemId, false)
             updateList()

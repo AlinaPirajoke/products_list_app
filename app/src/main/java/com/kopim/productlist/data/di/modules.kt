@@ -1,6 +1,6 @@
 package com.kopim.productlist.data.di
 
-import com.kopim.productlist.data.model.database.DataBaseConnection
+import com.kopim.productlist.data.model.database.DatabaseConnection
 import com.kopim.productlist.data.model.database.DatabaseConnectionInterface
 import com.kopim.productlist.data.model.database.SharedPreferencesManager
 import com.kopim.productlist.data.model.database.utils.AppDatabase
@@ -32,7 +32,7 @@ private fun Module.model(){
         ListDataSource(get(), get())
     }
     single<DatabaseConnectionInterface> {
-        DataBaseConnection(get())
+        DatabaseConnection(get())
     }
     single<ListNetworkConnectionInterface> {
         ListNetworkConnection(get(), get())

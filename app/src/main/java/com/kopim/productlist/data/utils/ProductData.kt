@@ -12,7 +12,7 @@ data class ProductData(
     val completed: Boolean,
     val checkedAt: String?,
     val productId: Long = 0,
-){
+) {
     fun toProductUiData() = ProductUiData(
         id = this.id,
         text = this.name,
@@ -34,4 +34,20 @@ data class ProductData(
         name = this.name,
         mentions = 1,
     )
+
+    companion object {
+        fun MutableList<ProductData>.applyCheckChanges(changes: List<LocalChange.CheckChange>) {
+            changes.forEach { change ->
+                val itemForChange = this.indexOfFirst { item -> item.id == change.itemId }
+                this[itemForChange] = this[itemForChange].copy(completed = change.checked)
+            }
+        }
+
+        fun MutableList<ProductData>.applyRenameChanges(changes: List<LocalChange.RenameChange>) {
+            changes.forEach { change ->
+                val itemForChange = this.indexOfFirst { item -> item.id == change.itemId }
+                this[itemForChange] = this[itemForChange].copy(name = change.newName)
+            }
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.kopim.productlist.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,6 +33,7 @@ import com.kopim.productlist.R
 import com.kopim.productlist.data.mvvm.ListViewModel
 import com.kopim.productlist.data.utils.ListScreenMode
 import com.kopim.productlist.ui.components.DefaultFab
+import com.kopim.productlist.ui.components.LocalProductTile
 import com.kopim.productlist.ui.components.NewProductInputSystem
 import com.kopim.productlist.ui.components.ProductTile
 import com.kopim.productlist.ui.theme.cartListSpacing
@@ -104,6 +106,10 @@ fun CartScreen(
                             .padding(horizontal = defaultPadding),
                         state = listState
                     ) {
+                        items(state.localProducts) { item ->
+                            LocalProductTile(item)
+                            Spacer(modifier = Modifier.height(cartListSpacing))
+                        }
                         items(state.cart, key = { item -> item.id }) { item ->
                             ProductTile(
                                 data = item,

@@ -11,9 +11,4 @@ data class ListProductDTO(
     val color: String
 ) {
     fun toProductData() = ProductData(id, color, product, checked, null, productId)
-
-    companion object {
-        fun List<ListProductDTO>.toProductListData() =
-            ProductListData(this.map { it.toProductData() })
-    }
 }

@@ -9,11 +9,28 @@ interface DatabaseConnectionInterface {
 
     suspend fun updateProducts(hints: List<Hint>)
 
-    suspend fun getCart(cartId: Long): ProductListData
+    suspend fun getCartWithUpdates(cartId: Long): ProductListData
 
     suspend fun updateCart(data: ProductListData, cartId: Long)
 
-    suspend fun addChange(change: LocalChange)
+    suspend fun addChange(change: LocalChange.AdditionChange)
 
-    suspend fun getChanges(): List<LocalChange>
+    suspend fun addChange(change: LocalChange.CheckChange)
+
+    suspend fun addChange(change: LocalChange.RenameChange)
+
+    suspend fun getAdditionChangesByCart(cartId: Long): List<LocalChange.AdditionChange>
+
+    suspend fun getAdditionChanges(): List<LocalChange.AdditionChange>
+
+    suspend fun getRenameChanges(): List<LocalChange.RenameChange>
+
+    suspend fun getCheckChanges(): List<LocalChange.CheckChange>
+
+    suspend fun removeAdditionChanges()
+
+    suspend fun removeRenameChanges()
+
+    suspend fun removeCheckChanges()
+
 }

@@ -1,5 +1,6 @@
 package com.kopim.productlist.data.utils
 
 data class ProductListData(
-    val items: List<ProductData> = emptyList()
+    val usualItems: List<ProductData> = emptyList(),
+    val localItems: List<LocalChange.AdditionChange> = emptyList()
 )

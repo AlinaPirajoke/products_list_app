@@ -101,8 +101,6 @@ class ListStore(
         suspend fun listSubscribe(id: Long, updateDelay: Long): StateFlow<ProductListData?>
         fun listUnsubscribe(): Unit
         suspend fun fetchUpdates(id: Long): Unit
-        suspend fun addProducts(products: List<NewProductData>): Unit
-        suspend fun checkProduct(items: List<CheckedProductData>): Unit
         suspend fun getHints(query: String): MutableStateFlow<List<Hint>?>
     }
 }

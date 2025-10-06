@@ -1,21 +1,31 @@
 package com.kopim.productlist.data.utils
 
-import com.kopim.productlist.data.model.database.entities.LocalChangeEntity
-import com.kopim.productlist.data.model.database.utils.ChangeType
-import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartRequestData
+import com.kopim.productlist.data.model.database.entities.changeentities.LocalAdditionChangeDbEntity
+import com.kopim.productlist.data.model.database.entities.changeentities.LocalCheckChangeDbEntity
+import com.kopim.productlist.data.model.database.entities.changeentities.LocalRenameChangeDbEntity
 import com.kopim.productlist.data.model.network.utils.CheckedProductData
 import com.kopim.productlist.data.model.network.utils.NewProductData
 
-data class LocalChange(
-    val itemId: Long,
-    val name: String,
-    val checked: Boolean,
-    val changeType: ChangeType
+sealed class LocalChange(
+    val changeId: Long?,
 ){
-    fun toLocalChangeEntity() = LocalChangeEntity(itemId, name, checked, changeType.typeId)
+    class AdditionChange(changeId: Long? = null, val name: String, val cartId: Long): LocalChange(changeId) {
+        fun toLocalAdditionChangeEntity() = LocalAdditionChangeDbEntity(changeId, name, cartId)
+        fun toNewProductData() = NewProductData(name, cartId)
+    }
 
-    fun toNewProductData() = NewProductData(itemId, name)
+    class CheckChange(changeId: Long? = null, val checked: Boolean, val itemId: Long): LocalChange(changeId) {
+        fun toLocalCheckChangeEntity() = LocalCheckChangeDbEntity(changeId, checked, itemId)
+        fun toCheckedProductData() = CheckedProductData(itemId, checked)
+    }
 
-    fun toCheckedProductData() = CheckedProductData(itemId, checked)
+    class RenameChange(changeId: Long? = null, val newName: String, val itemId: Long): LocalChange(changeId){
+        fun toLocalRenameChangeEntity() = LocalRenameChangeDbEntity(changeId, newName, itemId)
+        // todo realisation
+    }
+
+    companion object {
+        const val DEFAULT_CHANGE_ID = -1L
+    }
 }
 

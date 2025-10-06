@@ -3,7 +3,8 @@ package com.kopim.productlist.data.model.network
 import android.util.Log
 import com.kopim.productlist.data.model.database.SharedPreferencesManager
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartRequestData
-import com.kopim.productlist.data.model.network.apimodels.removefromcart.RemoveFromCartRequestData
+import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartResponseData
+import com.kopim.productlist.data.model.network.apimodels.removefromcart.CheckProductRequestData
 import com.kopim.productlist.data.model.network.networksettings.ApiService
 import com.kopim.productlist.data.model.network.utils.CheckedProductData
 import com.kopim.productlist.data.model.network.utils.NewProductData
@@ -13,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 private const val TAG = "ListNetworkConnection"
 
@@ -54,10 +56,10 @@ class ListNetworkConnection(
         }
 
 
-    override suspend fun addProducts(products: List<NewProductData>) {
-        if (products.isEmpty()) return
+    override suspend fun addProducts(products: List<NewProductData>): Response<AddToCartResponseData>? {
+        if (products.isEmpty()) return null
 
-        safeRequest {
+        return safeRequest {
             if (checkLogin()) {
                 connection.addToCart(
                     AddToCartRequestData(
@@ -69,20 +71,27 @@ class ListNetworkConnection(
                     )
                 )
             }
+            else null
         }
     }
 
-    override suspend fun checkProduct(items: List<CheckedProductData>) {
-        if (items.isEmpty()) return
+    override suspend fun checkProduct(items: List<CheckedProductData>): Response<Unit>? {
+        if (items.isEmpty()) return null
 
-        safeRequest {
+        return safeRequest {
             if (checkLogin()) {
                 connection.checkProduct(
-                    RemoveFromCartRequestData(
-                        items.map { RemoveFromCartRequestData.RemoveFromCartRequestItem(it.itemId, it.checked) },
+                    CheckProductRequestData(
+                        items.map {
+                            CheckProductRequestData.RemoveFromCartRequestItem(
+                                it.itemId,
+                                it.checked
+                            )
+                        },
                     )
                 )
             }
+            else null
         }
-        }
+    }
 }

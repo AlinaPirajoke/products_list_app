@@ -25,7 +25,7 @@ data class GetCartResponseData(
     }
 
     fun toProductListData() = ProductListData(
-        items = this.items.map { it.toProductData() }
+        usualItems = this.items.map { it.toProductData() }
     )
 }
 
