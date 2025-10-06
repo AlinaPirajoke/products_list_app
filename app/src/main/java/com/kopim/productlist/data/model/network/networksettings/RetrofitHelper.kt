@@ -1,5 +1,7 @@
 package com.kopim.productlist.data.model.network.networksettings
 
+import com.kopim.productlist.data.model.network.networksettings.apiservices.FcmApiService
+import com.kopim.productlist.data.model.network.networksettings.apiservices.ListApiService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,6 +16,9 @@ object RetrofitHelper {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-    fun getApiService(retrofit: Retrofit): ApiService =
-        retrofit.create(ApiService::class.java)
+    fun getListApiService(retrofit: Retrofit): ListApiService =
+        retrofit.create(ListApiService::class.java)
+
+    fun getFcmApiService(retrofit: Retrofit): FcmApiService =
+        retrofit.create(FcmApiService::class.java)
 }

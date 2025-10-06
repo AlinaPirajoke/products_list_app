@@ -1,11 +1,12 @@
-package com.kopim.productlist.data.model.network
+package com.kopim.productlist.data.model.network.connections.list
 
 import android.util.Log
 import com.kopim.productlist.data.model.database.SharedPreferencesManager
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartRequestData
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartResponseData
 import com.kopim.productlist.data.model.network.apimodels.removefromcart.CheckProductRequestData
-import com.kopim.productlist.data.model.network.networksettings.ApiService
+import com.kopim.productlist.data.model.network.connections.BaseNetworkConnection
+import com.kopim.productlist.data.model.network.networksettings.apiservices.ListApiService
 import com.kopim.productlist.data.model.network.utils.CheckedProductData
 import com.kopim.productlist.data.model.network.utils.NewProductData
 import com.kopim.productlist.data.utils.Hint
@@ -19,7 +20,7 @@ import retrofit2.Response
 private const val TAG = "ListNetworkConnection"
 
 class ListNetworkConnection(
-    connection: ApiService,
+    override val connection: ListApiService,
     spm: SharedPreferencesManager
 ) : BaseNetworkConnection(connection, spm), ListNetworkConnectionInterface {
     override val lastCartData: MutableStateFlow<ProductListData?> = MutableStateFlow(null)

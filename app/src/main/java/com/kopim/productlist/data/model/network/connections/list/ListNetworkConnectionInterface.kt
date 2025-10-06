@@ -1,4 +1,4 @@
-package com.kopim.productlist.data.model.network
+package com.kopim.productlist.data.model.network.connections.list
 
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartResponseData
 import com.kopim.productlist.data.model.network.utils.CheckedProductData

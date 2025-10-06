@@ -1,4 +1,4 @@
-package com.kopim.productlist.data.model.network.networksettings
+package com.kopim.productlist.data.model.network.networksettings.apiservices
 
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartRequestData
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartResponseData
@@ -12,9 +12,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-interface ApiService {
-    @GET("login")
-    suspend fun login(): Response<LoginResponseData>
+interface ListApiService: ApiService {
 
     @GET("get_list")
     suspend fun getProducts(

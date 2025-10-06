@@ -2,7 +2,7 @@ package com.kopim.productlist.data.model.datasource
 
 import android.util.Log
 import com.kopim.productlist.data.model.database.DatabaseConnectionInterface
-import com.kopim.productlist.data.model.network.ListNetworkConnectionInterface
+import com.kopim.productlist.data.model.network.connections.list.ListNetworkConnectionInterface
 import com.kopim.productlist.data.model.network.utils.CheckedProductData
 import com.kopim.productlist.data.model.network.utils.NewProductData
 import com.kopim.productlist.data.utils.Hint

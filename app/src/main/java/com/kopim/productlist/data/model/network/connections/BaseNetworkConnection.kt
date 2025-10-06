@@ -1,13 +1,14 @@
-package com.kopim.productlist.data.model.network
+package com.kopim.productlist.data.model.network.connections
 
 import android.util.Log
 import com.kopim.productlist.data.model.database.SharedPreferencesManager
-import com.kopim.productlist.data.model.network.networksettings.ApiService
+import com.kopim.productlist.data.model.network.networksettings.apiservices.ApiService
+import okhttp3.Request
 
 private const val TAG = "BaseNetworkConnection"
 
 open class BaseNetworkConnection(
-    protected val connection: ApiService,
+    protected open val connection: ApiService,
     protected val spm: SharedPreferencesManager
 ) {
     protected var token = spm.userToken

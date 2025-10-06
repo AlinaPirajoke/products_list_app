@@ -16,9 +16,6 @@
       <SelectionState runConfigName="ExampleInstrumentedTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="useAppContext()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="getProductHints()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>

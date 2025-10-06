@@ -7,11 +7,12 @@ import com.kopim.productlist.data.model.database.utils.AppDatabase
 import com.kopim.productlist.data.model.database.utils.DatabaseProvider
 import com.kopim.productlist.data.model.datasource.ListDataSource
 import com.kopim.productlist.data.model.datasource.ListDataSourceInterface
-import com.kopim.productlist.data.model.network.ListNetworkConnection
-import com.kopim.productlist.data.model.network.ListNetworkConnectionInterface
-import com.kopim.productlist.data.model.network.networksettings.ApiService
+import com.kopim.productlist.data.model.network.connections.list.ListNetworkConnection
+import com.kopim.productlist.data.model.network.connections.list.ListNetworkConnectionInterface
+import com.kopim.productlist.data.model.network.networksettings.apiservices.ListApiService
 import com.kopim.productlist.data.model.network.networksettings.OkHttpClientHelper
 import com.kopim.productlist.data.model.network.networksettings.RetrofitHelper
+import com.kopim.productlist.data.model.network.networksettings.apiservices.FcmApiService
 import com.kopim.productlist.data.mvvm.ListViewModel
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -44,8 +45,11 @@ private fun Module.model(){
     single<Retrofit> {
         RetrofitHelper.getRetrofit(get())
     }
-    single<ApiService> {
-        RetrofitHelper.getApiService(get())
+    single<ListApiService> {
+        RetrofitHelper.getListApiService(get())
+    }
+    single<FcmApiService> {
+        RetrofitHelper.getFcmApiService(get())
     }
     single<AppDatabase> {
         DatabaseProvider.getDatabase(get())
