@@ -11,7 +11,7 @@ object DatabaseProvider {
             Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
-                "app_database"
+                "products_database"
             ).build().also { INSTANCE = it }
         }
     }

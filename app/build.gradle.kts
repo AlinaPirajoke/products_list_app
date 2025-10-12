@@ -62,7 +62,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.firebase.messaging.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,6 +97,6 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.1.0")
     testImplementation("io.mockk:mockk:1.14.6")
 
-    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
-    implementation("com.google.firebase:firebase-messaging:25.0.1")
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+    implementation("com.google.firebase:firebase-messaging")
 }

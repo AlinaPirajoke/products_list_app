@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.kopim.productlist.R
 import com.kopim.productlist.data.mvvm.ListViewModel
@@ -96,7 +97,7 @@ fun CartScreen(
                         Text(
                             text = stringResource(R.string.default_list_label),
                             color = textBlack,
-                            style = TextStyle(fontSize = 20.sp)
+                            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Medium)
                         )
                     }
 

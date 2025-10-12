@@ -7,6 +7,8 @@ import com.kopim.productlist.data.model.database.utils.AppDatabase
 import com.kopim.productlist.data.model.database.utils.DatabaseProvider
 import com.kopim.productlist.data.model.datasource.ListDataSource
 import com.kopim.productlist.data.model.datasource.ListDataSourceInterface
+import com.kopim.productlist.data.model.network.connections.fcm.FcmNetworkConnection
+import com.kopim.productlist.data.model.network.connections.fcm.FcmNetworkConnectionInterface
 import com.kopim.productlist.data.model.network.connections.list.ListNetworkConnection
 import com.kopim.productlist.data.model.network.connections.list.ListNetworkConnectionInterface
 import com.kopim.productlist.data.model.network.networksettings.apiservices.ListApiService
@@ -37,6 +39,9 @@ private fun Module.model(){
     }
     single<ListNetworkConnectionInterface> {
         ListNetworkConnection(get(), get())
+    }
+    single<FcmNetworkConnectionInterface> {
+        FcmNetworkConnection(get(), get())
     }
 
     single<OkHttpClient> {
