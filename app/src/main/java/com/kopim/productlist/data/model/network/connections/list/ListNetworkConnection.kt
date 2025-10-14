@@ -5,10 +5,13 @@ import com.kopim.productlist.data.model.database.SharedPreferencesManager
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartRequestData
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartResponseData
 import com.kopim.productlist.data.model.network.apimodels.removefromcart.CheckProductRequestData
+import com.kopim.productlist.data.model.network.apimodels.renameitem.RenameItemRequestData
+import com.kopim.productlist.data.model.network.apimodels.renameitem.RenameItemRequestData.RenameItemRequestItem
 import com.kopim.productlist.data.model.network.connections.BaseNetworkConnection
 import com.kopim.productlist.data.model.network.networksettings.apiservices.ListApiService
 import com.kopim.productlist.data.model.network.utils.CheckedProductData
 import com.kopim.productlist.data.model.network.utils.NewProductData
+import com.kopim.productlist.data.model.network.utils.RenamedProductData
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.ProductListData
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +26,7 @@ class ListNetworkConnection(
     override val connection: ListApiService,
     spm: SharedPreferencesManager
 ) : BaseNetworkConnection(connection, spm), ListNetworkConnectionInterface {
-    override val lastCartData: MutableStateFlow<ProductListData?> = MutableStateFlow(null)
+    override val lastIncomingCartData: MutableStateFlow<ProductListData?> = MutableStateFlow(null)
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
@@ -37,7 +40,7 @@ class ListNetworkConnection(
             if (checkLogin()) {
                 val response = connection.getProducts(cartId)
                 if (response.isSuccessful) {
-                    lastCartData.emit(
+                    lastIncomingCartData.emit(
                         response.body()?.toProductListData() ?: return@safeRequest
                     )
                 }
@@ -76,7 +79,7 @@ class ListNetworkConnection(
         }
     }
 
-    override suspend fun checkProduct(items: List<CheckedProductData>): Response<Unit>? {
+    override suspend fun checkProducts(items: List<CheckedProductData>): Response<Unit>? {
         if (items.isEmpty()) return null
 
         return safeRequest {
@@ -89,6 +92,26 @@ class ListNetworkConnection(
                                 it.checked
                             )
                         },
+                    )
+                )
+            }
+            else null
+        }
+    }
+
+    override suspend fun renameProducts(items: List<RenamedProductData>): Response<Unit>? {
+        if (items.isEmpty()) return null
+
+        return safeRequest {
+            if (checkLogin()) {
+                connection.renameItem(
+                    RenameItemRequestData(
+                        items.map { item ->
+                            RenameItemRequestItem(
+                                item.itemId,
+                                item.newName
+                            )
+                        }
                     )
                 )
             }

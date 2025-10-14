@@ -1,6 +1,5 @@
 package com.kopim.productlist.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,10 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,8 +42,9 @@ import com.kopim.productlist.ui.theme.lightBlue
 import com.kopim.productlist.ui.theme.listCardPadding
 import com.kopim.productlist.ui.theme.okGreen
 import com.kopim.productlist.ui.theme.paleBlue
-import com.kopim.productlist.ui.theme.textBlack
+import com.kopim.productlist.ui.theme.productTileFieldPadding
 import com.kopim.productlist.ui.theme.thinPadding
+import kotlinx.coroutines.delay
 
 private const val BUTTONS_QUANTITY = 2
 private val buttonsWith = (iconButtonSize + thinPadding) * BUTTONS_QUANTITY + defaultPadding
@@ -51,24 +55,26 @@ fun ProductTile(
     onPick: () -> Unit,
     onDelete: () -> Unit,
     onEdit: () -> Unit,
+    onTextChange: (TextFieldValue) -> Unit,
+    onChangeConfirm: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
     var tileHeight by remember { mutableStateOf(0.dp) }
     var tileWidth by remember { mutableStateOf(0.dp) }
     var textWidth by remember { mutableStateOf(0.dp) }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     var textOverflowed by remember(
         tileWidth,
         textWidth
     ) { mutableStateOf(tileWidth - textWidth < buttonsWith) }
 
-    val buttonsAtSide = remember(textOverflowed, data.picked) { !textOverflowed && data.picked }
-    val buttonsAtBot = remember(textOverflowed, data.picked) { textOverflowed && data.picked }
-
-    LaunchedEffect(textOverflowed, data.picked) {
-        Log.d("ProductTile", "text: $textWidth, tile: $tileWidth, buttons: $buttonsWith")
-    }
+    val showButtons = remember(!data.isEditing, data.picked) { data.picked && !data.isEditing }
+    val buttonsAtSide = remember(textOverflowed, showButtons) { !textOverflowed && showButtons }
+    val buttonsAtBot = remember(textOverflowed, showButtons) { textOverflowed && showButtons }
 
     val buttons = @Composable {
         Row(
@@ -133,18 +139,43 @@ fun ProductTile(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = data.text,
-                            Modifier
-                                .padding(horizontal = thinPadding)
-                                .onGloballyPositioned { coords ->
-                                    with(density) {
-                                        textWidth = coords.size.width.toDp()
-                                    }
-                                },
-                            textDecoration = if (data.lineTrough) TextDecoration.LineThrough else null,
-                            color = textBlack
-                        )
+                        if (data.isEditing) {
+                            ProductTileTextField(
+                                text = data.fieldText,
+                                onEdit = onTextChange,
+                                onConfirm = onChangeConfirm,
+                                modifier = Modifier
+                                    .padding(
+                                        horizontal = productTileFieldPadding
+                                    )
+                                    .weight(1f),
+                                focusRequester = focusRequester
+                            )
+                            SquareIconButton(
+                                onClick = onChangeConfirm,
+                                modifier = Modifier.padding(horizontal = thinPadding)
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.edit),
+                                    contentDescription = null,
+                                    Modifier.fillMaxSize(),
+                                    tint = lightBlue
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = data.text,
+                                modifier = Modifier
+                                    .padding(horizontal = thinPadding)
+                                    .onGloballyPositioned { cords ->
+                                        with(density) {
+                                            textWidth = cords.size.width.toDp()
+                                        }
+                                    },
+                                textDecoration = if (data.lineTrough) TextDecoration.LineThrough else null,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
                         if (buttonsAtSide) {
                             buttons()
                         }
@@ -163,6 +194,17 @@ fun ProductTile(
             }
         }
     }
+
+    LaunchedEffect(data.isEditing) {
+        if (data.isEditing) {
+            delay(25)
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        } else {
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
+    }
 }
 
 @Preview(showBackground = true)
@@ -176,11 +218,18 @@ private fun ProductTilePreview() {
                     ProductUiData(1, Color(0xFF81D4FA), "Продукт 1", false, productPicked),
                     { productPicked = !productPicked },
                     {},
+                    {},
+                    {},
                     {}
                 )
                 Spacer(Modifier.height(listCardPadding))
                 ProductTile(
-                    ProductUiData(2, Color(0xFFC194FA), "Продукт 2", true, false), {}, {}, {}
+                    ProductUiData(2, Color(0xFFC194FA), "Продукт 2", true, false),
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
                 )
                 Spacer(Modifier.height(listCardPadding))
                 ProductTile(
@@ -189,12 +238,19 @@ private fun ProductTilePreview() {
                         Color(0xFF81D4FA),
                         "Супер пупер мега крутой продукт 3",
                         false,
-                        true
-                    ), {}, {}, {}
+                        true,
+                        true,
+                        TextFieldValue("Hello World!!!")
+                    ), {}, {}, {}, {}, {}
                 )
                 Spacer(Modifier.height(listCardPadding))
                 ProductTile(
-                    ProductUiData(4, Color(0xFF81D4FA), "Продукт 4", false, true), {}, {}, {}
+                    ProductUiData(4, Color(0xFF81D4FA), "Продукт 4", false, true),
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
                 )
             }
         }

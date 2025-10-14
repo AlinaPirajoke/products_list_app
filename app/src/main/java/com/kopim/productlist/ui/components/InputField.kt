@@ -15,6 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -39,8 +41,8 @@ fun InputField(
     text: TextFieldValue,
     onEdit: (TextFieldValue) -> Unit,
     onConfirm: () -> Unit,
-    boxModifier: Modifier = Modifier,
-    fieldModifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    focusRequester: FocusRequester = FocusRequester()
 ) {
     BasicTextField(
         value = text,
@@ -48,7 +50,7 @@ fun InputField(
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Text, capitalization = KeyboardCapitalization.Sentences),
         keyboardActions = KeyboardActions(onDone = { onConfirm() }),
-        modifier = fieldModifier,
+        modifier = Modifier.focusRequester(focusRequester),
         textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.primaryContainer),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primaryContainer),
     ) { field ->
@@ -56,7 +58,7 @@ fun InputField(
             modifier = Modifier
                 .height(inputFieldHeight)
                 .widthIn(min = inputFieldWidth)
-                .then(boxModifier),
+                .then(modifier),
             horizontalAlignment = Alignment.Start
         ) {
             Box(
@@ -92,7 +94,8 @@ fun InputFieldPreview() {
         InputField(
             text = TextFieldValue("Hello world!"),
             onEdit = {},
-            onConfirm = {}
+            onConfirm = {},
+
         )
     }
 }

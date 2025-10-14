@@ -22,11 +22,11 @@ fun SquareIconButton(
     FilledIconButton(
         onClick = onClick,
         Modifier
-            .size(iconButtonSize)
-            .then(modifier),
+            .then(modifier)
+            .size(iconButtonSize),
         colors = IconButtonDefaults.iconButtonColors(
             contentColor = MaterialTheme.colorScheme.onSecondary,
-            containerColor = MaterialTheme.colorScheme.secondary
+            containerColor = background
         ),
         shape = MaterialTheme.shapes.small
     ) {

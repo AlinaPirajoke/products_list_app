@@ -1,6 +1,5 @@
 package com.kopim.productlist.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,7 +38,9 @@ import com.kopim.productlist.ui.components.NewProductInputSystem
 import com.kopim.productlist.ui.components.ProductTile
 import com.kopim.productlist.ui.theme.cartListSpacing
 import com.kopim.productlist.ui.theme.defaultPadding
+import com.kopim.productlist.ui.theme.surfaceWhite
 import com.kopim.productlist.ui.theme.textBlack
+import com.kopim.productlist.ui.theme.thinPadding
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -74,7 +75,8 @@ fun CartScreen(
                 DefaultFab(onClick = vm::enterAdditionMode) {
                     Icon(
                         painter = painterResource(R.drawable.add),
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(thinPadding).fillMaxSize(),
                         contentDescription = null,
                     )
                 }
@@ -116,7 +118,10 @@ fun CartScreen(
                                 data = item,
                                 onPick = { vm.selectItem(item.id) },
                                 onDelete = { vm.onCheck(item.id) },
-                                onEdit = {/*todo*/ })
+                                onEdit = { vm.onEditionStart(item.id) },
+                                onTextChange = { vm.onEditionFieldTextChange(item.id, it) },
+                                onChangeConfirm = { vm.onEditionConfirm(item.id) }
+                            )
                             Spacer(modifier = Modifier.height(cartListSpacing))
                         }
                     }

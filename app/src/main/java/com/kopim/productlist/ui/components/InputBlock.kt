@@ -39,8 +39,8 @@ fun InputBlock(
             text = text,
             onEdit = onEdit,
             onConfirm = onConfirm,
-            boxModifier = Modifier.weight(9f),
-            fieldModifier = Modifier.focusRequester(focusRequester)
+            modifier = Modifier.weight(9f),
+            focusRequester = focusRequester
         )
         SquareIconButton(
             onClick = onConfirm,

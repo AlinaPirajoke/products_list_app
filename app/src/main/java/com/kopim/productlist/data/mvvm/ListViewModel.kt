@@ -104,8 +104,9 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
         val pickedElementIndex = newCart.indexOfFirst { it.id == itemId }
         val pickedElement = newCart[pickedElementIndex]
 
-        newCart[pickedElementIndex] = pickedElement.copy(picked = picked ?: !pickedElement.picked)
+        if (pickedElement.isEditing) return // Не будем мешать вводу
 
+        newCart[pickedElementIndex] = pickedElement.copy(picked = picked ?: !pickedElement.picked)
         _state.update { state ->
             state.copy(
                 cart = newCart
@@ -143,7 +144,7 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
             viewModelScope.launch {
                 dataSource.addChange(
                     change = LocalChange.AdditionChange(
-                        name = productName ?: state.value.newProductFieldValue.text,
+                        name = productName?.trim() ?: state.value.newProductFieldValue.text.trim(),
                         cartId = id
                     ),
                     listId = id
@@ -190,6 +191,57 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
             }
             selectItem(itemId, false)
             updateList()
+        }
+    }
+
+    fun onEditionStart(itemId: Long) {
+        val newCart = state.value.cart.toMutableList()
+        val pickedElementIndex = newCart.indexOfFirst { it.id == itemId }
+
+        newCart[pickedElementIndex] = newCart[pickedElementIndex].copy(isEditing = true)
+        _state.update { state ->
+            state.copy(
+                cart = newCart
+            )
+        }
+    }
+
+    fun onEditionFieldTextChange(itemId: Long, newValue: TextFieldValue) {
+        val newCart = state.value.cart.toMutableList()
+        val pickedElementIndex = newCart.indexOfFirst { it.id == itemId }
+
+        newCart[pickedElementIndex] = newCart[pickedElementIndex].copy(fieldText = newValue)
+        _state.update { state ->
+            state.copy(
+                cart = newCart
+            )
+        }
+    }
+
+    fun onEditionConfirm(itemId: Long) {
+        val newCart = state.value.cart.toMutableList()
+        val pickedElementIndex = newCart.indexOfFirst { it.id == itemId }
+        val fieldText = newCart[pickedElementIndex].fieldText.text.trim()
+
+        viewModelScope.launch {
+            listId?.let { list ->
+                dataSource.addChange(
+                    LocalChange.RenameChange(
+                        newName = fieldText,
+                        itemId = itemId
+                    ),
+                    list
+                )
+                updateList()
+            }
+        }
+
+        newCart[pickedElementIndex] =
+            newCart[pickedElementIndex].copy(isEditing = false, picked = false, text = fieldText)
+        _state.update { state ->
+            state.copy(
+                cart = newCart
+            )
         }
     }
 }

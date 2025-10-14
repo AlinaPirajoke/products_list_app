@@ -5,6 +5,7 @@ import com.kopim.productlist.data.model.database.DatabaseConnectionInterface
 import com.kopim.productlist.data.model.network.connections.list.ListNetworkConnectionInterface
 import com.kopim.productlist.data.model.network.utils.CheckedProductData
 import com.kopim.productlist.data.model.network.utils.NewProductData
+import com.kopim.productlist.data.model.network.utils.RenamedProductData
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.LocalChange
 import com.kopim.productlist.data.utils.ProductListData
@@ -23,8 +24,9 @@ private const val TAG = "ListDataSource"
 
 class ListDataSource(
     private val dbc: DatabaseConnectionInterface,
-    private val nc: ListNetworkConnectionInterface
+    private val nc: ListNetworkConnectionInterface,
 ) : ListDataSourceInterface {
+    private val actualListData: MutableStateFlow<ProductListData?> = MutableStateFlow(null)
 
     private var cartObserverJob: Job? = null
 
@@ -37,14 +39,15 @@ class ListDataSource(
     private suspend fun pushNewProducts(products: List<NewProductData>) =
         nc.addProducts(products)
 
-
     private suspend fun pushCheckedProducts(items: List<CheckedProductData>) =
-        nc.checkProduct(items)
+        nc.checkProducts(items)
 
+    private suspend fun pushRenamedProducts(items: List<RenamedProductData>) =
+        nc.renameProducts(items)
 
     private suspend fun fetchProductsFromDatabase(listId: Long) {
         Log.d(TAG, "Fetching products from database")
-        nc.lastCartData.emit(dbc.getCartWithUpdates(listId))
+        actualListData.emit(dbc.getCartWithUpdates(listId))
     }
 
     private suspend fun fetchProductsFromNetwork(listId: Long) {
@@ -63,15 +66,16 @@ class ListDataSource(
         Log.i(TAG, "Subscribed on list")
 
         CoroutineScope(Dispatchers.IO).launch {
-            nc.lastCartData.collect {
+            nc.lastIncomingCartData.collect {
                 it?.let {
+                    actualListData.emit(it)
                     dbc.updateCart(it, id)
                 }
             }
         }
         fetchProductsFromNetwork(id)
 
-        return nc.lastCartData.asStateFlow()
+        return actualListData.asStateFlow()
     }
 
     override fun listUnsubscribe(): Unit {
@@ -103,6 +107,9 @@ class ListDataSource(
         pushCheckedProducts(
             dbc.getCheckChanges()
                 .map { it.toCheckedProductData() })?.let { if (it.isSuccessful) dbc.removeCheckChanges() }
+        pushRenamedProducts(
+            dbc.getRenameChanges()
+                .map { it.toRenamedProductData() })?.let { if (it.isSuccessful) dbc.removeRenameChanges() }
     }
 
     override suspend fun getHints(query: String): MutableStateFlow<List<Hint>?> {

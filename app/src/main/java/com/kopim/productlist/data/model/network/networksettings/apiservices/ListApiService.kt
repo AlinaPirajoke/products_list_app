@@ -3,8 +3,8 @@ package com.kopim.productlist.data.model.network.networksettings.apiservices
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartRequestData
 import com.kopim.productlist.data.model.network.apimodels.addtocart.AddToCartResponseData
 import com.kopim.productlist.data.model.network.apimodels.getcart.GetCartResponseData
-import com.kopim.productlist.data.model.network.apimodels.login.LoginResponseData
 import com.kopim.productlist.data.model.network.apimodels.removefromcart.CheckProductRequestData
+import com.kopim.productlist.data.model.network.apimodels.renameitem.RenameItemRequestData
 import com.kopim.productlist.data.model.network.apimodels.searchhints.SearchHintsResponseItemData
 import retrofit2.Response
 import retrofit2.http.Body
@@ -32,5 +32,10 @@ interface ListApiService: ApiService {
     @POST("remove_from_cart")
     suspend fun checkProduct(
         @Body product: CheckProductRequestData
+    ): Response<Unit>
+
+    @POST("rename_item")
+    suspend fun renameItem(
+        @Body items: RenameItemRequestData
     ): Response<Unit>
 }

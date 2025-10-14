@@ -9,10 +9,12 @@ import com.kopim.productlist.data.utils.ProductData.Companion.applyCheckChanges
 import com.kopim.productlist.data.utils.ProductData.Companion.applyRenameChanges
 import com.kopim.productlist.data.utils.ProductListData
 import com.kopim.productlist.data.utils.TimeHelper
+import com.kopim.productlist.data.utils.Validator
 
 private const val LOG_TAG = "DataBaseConnection"
 
 class DatabaseConnection(val database: AppDatabase) : DatabaseConnectionInterface {
+
     override suspend fun getProductHints(query: String): List<Hint> =
         database.productDao().getProductsByKey(query).map {
             Log.i(LOG_TAG, "Getting hints $it")
@@ -26,9 +28,9 @@ class DatabaseConnection(val database: AppDatabase) : DatabaseConnectionInterfac
 
     override suspend fun getCartWithUpdates(cartId: Long): ProductListData {
         val items = database.listItemDao()
-                .getItemsByCartAfterDate(cartId, TimeHelper.getYesterdayDate())
-                .map { it.toProductData() }
-                .toMutableList()
+            .getItemsByCartAfterDate(cartId, TimeHelper.getYesterdayDate())
+            .map { it.toProductData() }
+            .toMutableList()
         items.applyCheckChanges(getCheckChanges())
         items.applyRenameChanges(getRenameChanges())
 
@@ -48,14 +50,17 @@ class DatabaseConnection(val database: AppDatabase) : DatabaseConnectionInterfac
     }
 
     override suspend fun addChange(change: LocalChange.AdditionChange) {
+        if(!Validator.validateChange(change)) return
         database.localAdditionChangeDao().upsert(change.toLocalAdditionChangeEntity())
     }
 
     override suspend fun addChange(change: LocalChange.CheckChange) {
+        if(!Validator.validateChange(change)) return
         database.localCheckChangeDao().upsert(change.toLocalCheckChangeEntity())
     }
 
     override suspend fun addChange(change: LocalChange.RenameChange) {
+        if(!Validator.validateChange(change)) return
         database.localRenameChangeDao().upsert(change.toLocalRenameChangeEntity())
     }
 
@@ -76,7 +81,7 @@ class DatabaseConnection(val database: AppDatabase) : DatabaseConnectionInterfac
     override suspend fun getRenameChanges(): List<LocalChange.RenameChange> {
         return database.localRenameChangeDao().getChanges().map {
             it.toLocalChange()
-        }
+        }.also { Log.d(LOG_TAG, "All renaming changes: $it") }
     }
 
     override suspend fun getCheckChanges(): List<LocalChange.CheckChange> {
@@ -87,15 +92,17 @@ class DatabaseConnection(val database: AppDatabase) : DatabaseConnectionInterfac
     }
 
     override suspend fun removeAdditionChanges() {
+        Log.i(LOG_TAG, "removing addition changes")
         database.localAdditionChangeDao().cleanChanges()
     }
 
     override suspend fun removeRenameChanges() {
+        Log.i(LOG_TAG, "removing renaming changes")
         database.localRenameChangeDao().cleanChanges()
     }
 
     override suspend fun removeCheckChanges() {
-        Log.e(LOG_TAG, "Removing check changes")
+        Log.i(LOG_TAG, "removing check changes")
         database.localCheckChangeDao().cleanChanges()
     }
 }

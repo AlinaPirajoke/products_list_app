@@ -7,8 +7,6 @@ import com.kopim.productlist.data.MVItry.mvistuff.StoreHelper
 import com.kopim.productlist.data.MVItry.mvistuff.list.ListStoreInterface.ListIntent
 import com.kopim.productlist.data.MVItry.mvistuff.list.ListStoreInterface.ListState
 import com.kopim.productlist.data.MVItry.mvistuff.list.ListStoreInterface.ListState.ProductState.ProductData.Data
-import com.kopim.productlist.data.model.network.utils.CheckedProductData
-import com.kopim.productlist.data.model.network.utils.NewProductData
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.ProductListData
 import kotlinx.coroutines.flow.MutableStateFlow
