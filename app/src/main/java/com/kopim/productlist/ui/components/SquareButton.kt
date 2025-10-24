@@ -13,11 +13,11 @@ import com.kopim.productlist.ui.theme.iconButtonIconPadding
 import com.kopim.productlist.ui.theme.iconButtonSize
 
 @Composable
-fun SquareIconButton(
+fun SquareButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     background: Color = MaterialTheme.colorScheme.secondary,
-    icon: @Composable () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     FilledIconButton(
         onClick = onClick,
@@ -31,7 +31,7 @@ fun SquareIconButton(
         shape = MaterialTheme.shapes.small
     ) {
         Box(Modifier.padding(iconButtonIconPadding)) {
-            icon()
+            content()
         }
     }
 }

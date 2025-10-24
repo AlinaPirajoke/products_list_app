@@ -30,12 +30,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.kopim.productlist.R
-import com.kopim.productlist.data.mvvm.ListViewModel
+import com.kopim.productlist.data.mvvm.list.ListViewModel
 import com.kopim.productlist.data.utils.ListScreenMode
 import com.kopim.productlist.ui.components.DefaultFab
 import com.kopim.productlist.ui.components.LocalProductTile
 import com.kopim.productlist.ui.components.NewProductInputSystem
 import com.kopim.productlist.ui.components.ProductTile
+import com.kopim.productlist.ui.components.ScreenTitle
 import com.kopim.productlist.ui.theme.cartListSpacing
 import com.kopim.productlist.ui.theme.defaultPadding
 import com.kopim.productlist.ui.theme.surfaceWhite
@@ -69,6 +70,7 @@ fun CartScreen(
         onConfirm = vm::onNewProductConfirm,
         onHide = vm::enterCartMode,
         onHintPick = vm::onHintPick,
+        modifier = Modifier.padding(contentPadding)
     ) {
         Scaffold(
             floatingActionButton = {
@@ -89,19 +91,7 @@ fun CartScreen(
                         .fillMaxSize()
                         .padding(innerPaddingValues)
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(defaultPadding),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.default_list_label),
-                            color = textBlack,
-                            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Medium)
-                        )
-                    }
+                    ScreenTitle(stringResource(R.string.default_list_label))
 
                     LazyColumn(
                         Modifier

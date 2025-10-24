@@ -2,4 +2,7 @@
     <string name="app_name">Продукты</string>
 
     <string name="default_list_label">Нужно купить:</string>
+
+    <string name="default_home_feed_label">Ваши списки:</string>
+    <string name="empty_home_feed_label">У вас пока нет списков</string>
 </resources>

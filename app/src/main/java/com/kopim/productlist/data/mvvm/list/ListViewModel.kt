@@ -1,4 +1,4 @@
-package com.kopim.productlist.data.mvvm
+package com.kopim.productlist.data.mvvm.list
 
 import android.util.Log
 import androidx.compose.ui.text.TextRange
@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewModelScope
 import com.kopim.productlist.data.model.datasource.ListDataSource
 import com.kopim.productlist.data.model.datasource.ListDataSourceInterface
+import com.kopim.productlist.data.mvvm.BaseViewModel
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.ListScreenMode
 import com.kopim.productlist.data.utils.LocalChange
@@ -73,7 +74,7 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
         cartObserverJob = viewModelScope.launch {
             listId?.let { id ->
                 val dataFlow =
-                    dataSource.listSubscribe(id, ListDataSource.ACTIVE_UPDATE_DELAY + 30_000L)
+                    dataSource.listSubscribe(id, ListDataSource.Companion.ACTIVE_UPDATE_DELAY + 30_000L)
                 Log.d(TAG, "Subscribed")
                 dataFlow.onEach {
                     Log.i(TAG, "New cart data: $it")

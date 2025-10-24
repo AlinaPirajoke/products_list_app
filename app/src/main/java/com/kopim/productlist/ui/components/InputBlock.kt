@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +41,7 @@ fun InputBlock(
             modifier = Modifier.weight(9f),
             focusRequester = focusRequester
         )
-        SquareIconButton(
+        SquareButton(
             onClick = onConfirm,
             modifier = Modifier.size(
                 inputBlockButtonWidth,

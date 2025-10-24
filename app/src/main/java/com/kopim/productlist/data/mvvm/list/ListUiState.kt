@@ -1,4 +1,4 @@
-package com.kopim.productlist.data.mvvm
+package com.kopim.productlist.data.mvvm.list
 
 import androidx.compose.ui.text.input.TextFieldValue
 import com.kopim.productlist.data.utils.Hint

@@ -82,7 +82,7 @@ fun ProductTile(
                 .height(iconButtonSize)
         ) {
             Spacer(Modifier.width(thinPadding))
-            SquareIconButton(onEdit) {
+            SquareButton(onEdit) {
                 Icon(
                     painter = painterResource(R.drawable.edit),
                     contentDescription = null,
@@ -91,7 +91,7 @@ fun ProductTile(
                 )
             }
             Spacer(Modifier.width(thinPadding))
-            SquareIconButton({ onDelete() }) {
+            SquareButton({ onDelete() }) {
                 Icon(
                     painter = painterResource(R.drawable.done2),
                     contentDescription = null,
@@ -151,7 +151,7 @@ fun ProductTile(
                                     .weight(1f),
                                 focusRequester = focusRequester
                             )
-                            SquareIconButton(
+                            SquareButton(
                                 onClick = onChangeConfirm,
                                 modifier = Modifier.padding(horizontal = thinPadding)
                             ) {

@@ -15,7 +15,7 @@ import com.kopim.productlist.data.model.network.networksettings.apiservices.List
 import com.kopim.productlist.data.model.network.networksettings.OkHttpClientHelper
 import com.kopim.productlist.data.model.network.networksettings.RetrofitHelper
 import com.kopim.productlist.data.model.network.networksettings.apiservices.FcmApiService
-import com.kopim.productlist.data.mvvm.ListViewModel
+import com.kopim.productlist.data.mvvm.list.ListViewModel
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
