@@ -1,5 +1,6 @@
 package com.kopim.productlist.data.model.network.networksettings
 
+import com.kopim.productlist.data.model.network.networksettings.apiservices.CartsApiService
 import com.kopim.productlist.data.model.network.networksettings.apiservices.FcmApiService
 import com.kopim.productlist.data.model.network.networksettings.apiservices.ListApiService
 import okhttp3.OkHttpClient
@@ -21,4 +22,7 @@ object RetrofitHelper {
 
     fun getFcmApiService(retrofit: Retrofit): FcmApiService =
         retrofit.create(FcmApiService::class.java)
+
+    fun getCartsApiService(retrofit: Retrofit): CartsApiService =
+        retrofit.create(CartsApiService::class.java)
 }

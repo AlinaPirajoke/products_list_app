@@ -4,11 +4,11 @@ import com.kopim.productlist.data.utils.ShortCartData
 import kotlinx.coroutines.flow.Flow
 
 interface CartsDataSourceInterface {
-    fun getUserCarts(): Flow<ShortCartData>
+    fun getUserCarts(): Flow<List<ShortCartData>?>
 
     fun addUserToCart(cartCode: String)
 
     fun removeUserFromCart(cartId: Long)
 
-    fun renameCart(newName: String)
+    fun renameCart(cartId: Long, newName: String)
 }

@@ -1,6 +1,8 @@
 package com.kopim.productlist.data.model.network.networksettings.apiservices
 
 import com.kopim.productlist.data.model.network.apimodels.addusertocart.AddUserToCartRequestData
+import com.kopim.productlist.data.model.network.apimodels.getcartinfo.GetCartInfoResponseData
+import com.kopim.productlist.data.model.network.apimodels.getcarts.GetCartsResponseData
 import com.kopim.productlist.data.model.network.apimodels.removeuserfromcart.RemoveUserFromCartRequestData
 import com.kopim.productlist.data.model.network.apimodels.renamecart.RenameCartRequestData
 import com.kopim.productlist.data.model.network.apimodels.updatefcm.UpdateFcmTokenRequestData
@@ -19,7 +21,7 @@ interface CartsApiService: ApiService {
     @GET("get_cart_info")
     suspend fun getCartInfo(
         @Query("cart") cart: Long
-    ): Response<Unit>
+    ): Response<GetCartInfoResponseData>
 
     @POST("add_user_to_cart")
     suspend fun addUserToCart(
@@ -33,5 +35,5 @@ interface CartsApiService: ApiService {
 
     @GET("get_carts")
     suspend fun getCarts(
-    ): Response<Unit>
+    ): Response<GetCartsResponseData>
 }
