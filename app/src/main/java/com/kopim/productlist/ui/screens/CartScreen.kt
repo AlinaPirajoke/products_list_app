@@ -20,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,6 +30,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.kopim.productlist.R
 import com.kopim.productlist.data.mvvm.list.ListViewModel
 import com.kopim.productlist.data.utils.ListScreenMode
@@ -38,6 +42,7 @@ import com.kopim.productlist.ui.components.NewProductInputSystem
 import com.kopim.productlist.ui.components.ProductTile
 import com.kopim.productlist.ui.components.ScreenTitle
 import com.kopim.productlist.ui.theme.cartListSpacing
+import com.kopim.productlist.ui.theme.defaultHorizontalEdgePadding
 import com.kopim.productlist.ui.theme.defaultPadding
 import com.kopim.productlist.ui.theme.surfaceWhite
 import com.kopim.productlist.ui.theme.textBlack
@@ -46,12 +51,18 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CartScreen(
-    contentPadding: PaddingValues,
-    listId: Long = 1,
+    listId: Long,
     vm: ListViewModel = koinViewModel(),
 ) {
     val listState = rememberLazyListState()
     val state by vm.state.collectAsState()
+    val navigator = LocalNavigator.currentOrThrow
+
+    LaunchedEffect(Unit) {
+        vm.navigateTo.collect { point ->
+            navigator.push(point)
+        }
+    }
 
     DisposableEffect(listId) {
         vm.unsubscribeOnList()
@@ -70,7 +81,6 @@ fun CartScreen(
         onConfirm = vm::onNewProductConfirm,
         onHide = vm::enterCartMode,
         onHintPick = vm::onHintPick,
-        modifier = Modifier.padding(contentPadding)
     ) {
         Scaffold(
             floatingActionButton = {
@@ -96,7 +106,7 @@ fun CartScreen(
                     LazyColumn(
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = defaultPadding),
+                            .padding(horizontal = defaultHorizontalEdgePadding),
                         state = listState
                     ) {
                         items(state.localProducts) { item ->

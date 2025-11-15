@@ -1,9 +1,8 @@
 package com.kopim.productlist.data.model.database.entities.dtos
 
 import com.kopim.productlist.data.utils.ProductData
-import com.kopim.productlist.data.utils.ProductListData
 
-data class ListProductDTO(
+data class ListProductDto(
     val id: Long,
     val product: String,
     val productId: Long,

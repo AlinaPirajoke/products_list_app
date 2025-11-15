@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.kopim.productlist.data.model.database.entities.ListItemDbEntity
-import com.kopim.productlist.data.model.database.entities.dtos.ListProductDTO
+import com.kopim.productlist.data.model.database.entities.dtos.ListProductDto
 import com.kopim.productlist.data.model.database.entities.dtos.LocalItemDto
 
 @Dao
@@ -18,7 +18,7 @@ interface ListItemDao {
     @Query("DELETE FROM list_items WHERE cart = :cartId")
     suspend fun cleanCart(cartId: Long)
 
-    @Query("""SELECT +
+    @Query("""SELECT 
             li.id as id,
             li.checked as checked,
             p.name as product,
@@ -29,9 +29,9 @@ interface ListItemDao {
             WHERE li.cart = :cartId AND (li.checkedAt > :date OR li.checkedAt IS NULL)
             ORDER BY li.checked ASC, li.id DESC
             """)
-    suspend fun getItemsByCartAfterDate(cartId: Long, date: String): List<ListProductDTO>
+    suspend fun getItemsByCartAfterDate(cartId: Long, date: String): List<ListProductDto>
 
-    @Query("""SELECT +
+    @Query("""SELECT 
             li.cart as cart,
             li.checked as checked,
             p.name as product

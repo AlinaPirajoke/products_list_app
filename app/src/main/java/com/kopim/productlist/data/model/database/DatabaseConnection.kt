@@ -8,6 +8,7 @@ import com.kopim.productlist.data.utils.LocalChange
 import com.kopim.productlist.data.utils.ProductData.Companion.applyCheckChanges
 import com.kopim.productlist.data.utils.ProductData.Companion.applyRenameChanges
 import com.kopim.productlist.data.utils.ProductListData
+import com.kopim.productlist.data.utils.ShortCartData
 import com.kopim.productlist.data.utils.TimeHelper
 import com.kopim.productlist.data.utils.Validator
 
@@ -104,5 +105,17 @@ class DatabaseConnection(val database: AppDatabase) : DatabaseConnectionInterfac
     override suspend fun removeCheckChanges() {
         Log.i(LOG_TAG, "removing check changes")
         database.localCheckChangeDao().cleanChanges()
+    }
+
+    override suspend fun addCartsData(carts: List<ShortCartData>) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeCart(cartId: Long) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCarts(): List<ShortCartData> {
+        TODO("Not yet implemented")
     }
 }

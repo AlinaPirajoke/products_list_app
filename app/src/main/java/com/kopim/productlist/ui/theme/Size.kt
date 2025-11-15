@@ -3,6 +3,8 @@ package com.kopim.productlist.ui.theme
 import androidx.compose.ui.unit.dp
 
 val defaultPadding = 16.dp
+val defaultHorizontalEdgePadding = 16.dp
+val defaultVerticalEdgePadding = 16.dp
 val thinPadding = 12.dp
 val listCardPadding = 4.dp
 
@@ -36,5 +38,11 @@ val hintBoxHeight = 300.dp
 val badgeHeight = 18.dp
 val badgeOuterPadding = 4.dp
 val badgeTextPadding = 6.dp
+
+val listPreviewCardMaxHeight = 240.dp
+val listPreviewCardWidth = 400.dp
+val listPreviewCardInnerPadding = 12.dp
+val listPreviewCardOuterPadding = 16.dp
+val listPreviewCardInterElementSpace = 6.dp
 
 //val inputFieldVerticalPadding = 12.dp

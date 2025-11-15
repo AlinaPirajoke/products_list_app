@@ -12,9 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import cafe.adriel.voyager.navigator.Navigator
 import com.kopim.productlist.data.model.network.connections.fcm.FcmNetworkConnectionInterface
 import com.kopim.productlist.data.model.notification.getFcmToken
 import com.kopim.productlist.data.model.service.DataUpdater
+import com.kopim.productlist.ui.navigation.CartNavPoint
 import com.kopim.productlist.ui.screens.CartScreen
 import com.kopim.productlist.ui.theme.ProductsTheme
 import kotlinx.coroutines.launch
@@ -31,9 +33,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProductsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    CartScreen(innerPadding)
-                }
+                Navigator(CartNavPoint(1))
             }
         }
     }

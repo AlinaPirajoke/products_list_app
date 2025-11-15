@@ -5,4 +5,10 @@
 
     <string name="default_home_feed_label">Ваши списки:</string>
     <string name="empty_home_feed_label">У вас пока нет списков</string>
+
+    <plurals name="trimmed_list_caption">
+        <item quantity="one">Ещё %d элемент</item>
+        <item quantity="few">Ещё %d элемента</item>
+        <item quantity="many">Ещё %d элементов</item>
+    </plurals>
 </resources>

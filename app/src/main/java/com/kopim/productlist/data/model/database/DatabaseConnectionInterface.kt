@@ -3,6 +3,7 @@ package com.kopim.productlist.data.model.database
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.LocalChange
 import com.kopim.productlist.data.utils.ProductListData
+import com.kopim.productlist.data.utils.ShortCartData
 
 interface DatabaseConnectionInterface {
     suspend fun getProductHints(query: String): List<Hint>
@@ -33,4 +34,9 @@ interface DatabaseConnectionInterface {
 
     suspend fun removeCheckChanges()
 
+    suspend fun addCartsData(carts: List<ShortCartData>)
+
+    suspend fun removeCart(cartId: Long)
+
+    suspend fun getCarts(): List<ShortCartData>
 }

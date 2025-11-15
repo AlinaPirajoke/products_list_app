@@ -1,11 +1,11 @@
 package com.kopim.productlist.data.utils
 
-data class ShortListData(
+data class ShortCartData(
     val name: String,
     val id: Long,
-    val items: ShortListItemsData
+    val items: List<ShortListItemData>
 ){
-    data class ShortListItemsData(
+    data class ShortListItemData(
         val name: String
     )
 }
