@@ -3,12 +3,14 @@ package com.kopim.productlist.data.model.database.utils
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.kopim.productlist.data.model.database.daos.CartDao
+import com.kopim.productlist.data.model.database.daos.CartFeedCacheDao
 import com.kopim.productlist.data.model.database.daos.ListItemDao
 import com.kopim.productlist.data.model.database.daos.LocalAdditionChangeDao
 import com.kopim.productlist.data.model.database.daos.LocalCheckChangeDao
 import com.kopim.productlist.data.model.database.daos.LocalRenameChangeDao
 import com.kopim.productlist.data.model.database.daos.ProductDao
 import com.kopim.productlist.data.model.database.entities.CartDbEntity
+import com.kopim.productlist.data.model.database.entities.CartFeedCacheEntity
 import com.kopim.productlist.data.model.database.entities.ListItemDbEntity
 import com.kopim.productlist.data.model.database.entities.ProductDbEntity
 import com.kopim.productlist.data.model.database.entities.changeentities.LocalAdditionChangeDbEntity
@@ -19,17 +21,19 @@ import com.kopim.productlist.data.model.database.entities.changeentities.LocalRe
     entities = [
         ProductDbEntity::class,
         CartDbEntity::class,
+        CartFeedCacheEntity::class,
         ListItemDbEntity::class,
         LocalAdditionChangeDbEntity::class,
         LocalCheckChangeDbEntity::class,
         LocalRenameChangeDbEntity::class
                ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun productDao(): ProductDao
     abstract fun cartDao(): CartDao
+    abstract fun cartFeedCacheDao(): CartFeedCacheDao
     abstract fun listItemDao(): ListItemDao
     abstract fun localAdditionChangeDao(): LocalAdditionChangeDao
     abstract fun localCheckChangeDao(): LocalCheckChangeDao

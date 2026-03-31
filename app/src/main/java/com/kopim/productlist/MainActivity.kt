@@ -5,9 +5,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -16,8 +13,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.kopim.productlist.data.model.network.connections.fcm.FcmNetworkConnectionInterface
 import com.kopim.productlist.data.model.notification.getFcmToken
 import com.kopim.productlist.data.model.service.DataUpdater
-import com.kopim.productlist.ui.navigation.CartNavPoint
-import com.kopim.productlist.ui.screens.CartScreen
+import com.kopim.productlist.ui.navigation.HomeFeedNavPoint
 import com.kopim.productlist.ui.theme.ProductsTheme
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -33,7 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProductsTheme {
-                Navigator(CartNavPoint(1))
+                Navigator(HomeFeedNavPoint)
             }
         }
     }

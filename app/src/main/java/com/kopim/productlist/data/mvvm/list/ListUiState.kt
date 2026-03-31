@@ -11,5 +11,7 @@ data class ListUiState(
     val newProductFieldValue: TextFieldValue = TextFieldValue(""),
     val screenMode: ListScreenMode = ListScreenMode.CartMode,
     val newProductHints: List<Hint> = emptyList(),
-    val localProducts: List<LocalChange.AdditionChange> = emptyList()
+    val localProducts: List<LocalChange.AdditionChange> = emptyList(),
+    /** Заголовок списка; пока [ListCartMetadataPort] не вернёт имя — null. */
+    val listTitle: String? = null,
 )

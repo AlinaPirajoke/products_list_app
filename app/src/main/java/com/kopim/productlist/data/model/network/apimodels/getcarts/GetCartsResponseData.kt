@@ -8,7 +8,8 @@ data class GetCartsResponseData(
     data class ShortCartResponseData(
         val cart_id: Long,
         val cart_name: String,
-        val products: List<ShortCartProductResponseData>
+        val products: List<ShortCartProductResponseData>,
+        val cart_code: String? = null,
     ){
         data class ShortCartProductResponseData(
             val product_id: Long,
@@ -23,7 +24,8 @@ data class GetCartsResponseData(
             ShortCartData(
                 name = cart_name,
                 id = cart_id,
-                items = products.map(ShortCartProductResponseData::toShortListItemData)
+                items = products.map(ShortCartProductResponseData::toShortListItemData),
+                inviteCode = cart_code,
             )
     }
 

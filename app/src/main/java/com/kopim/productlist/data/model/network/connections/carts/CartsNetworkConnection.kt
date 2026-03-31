@@ -3,15 +3,15 @@ package com.kopim.productlist.data.model.network.connections.carts
 import android.util.Log
 import com.kopim.productlist.data.model.database.SharedPreferencesManager
 import com.kopim.productlist.data.model.network.apimodels.addusertocart.AddUserToCartRequestData
+import com.kopim.productlist.data.model.network.apimodels.addusertocart.AddUserToCartResponseData
+import com.kopim.productlist.data.model.network.apimodels.getcartinfo.GetCartInfoResponseData
 import com.kopim.productlist.data.model.network.apimodels.getcarts.GetCartsResponseData
 import com.kopim.productlist.data.model.network.apimodels.removeuserfromcart.RemoveUserFromCartRequestData
 import com.kopim.productlist.data.model.network.apimodels.renamecart.RenameCartRequestData
 import com.kopim.productlist.data.model.network.connections.BaseNetworkConnection
 import com.kopim.productlist.data.model.network.networksettings.apiservices.CartsApiService
-import com.kopim.productlist.data.utils.ShortCartData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -39,7 +39,14 @@ class CartsNetworkConnection(
             else null
         }
 
-    override suspend fun addUserToCart(cartCode: String): Response<Unit>? =
+    override suspend fun getCartInfo(cartId: Long): Response<GetCartInfoResponseData>? =
+        safeRequest {
+            if (checkLogin()) {
+                connection.getCartInfo(cartId)
+            } else null
+        }
+
+    override suspend fun addUserToCart(cartCode: String): Response<AddUserToCartResponseData>? =
         safeRequest {
             if (checkLogin()) {
                 connection.addUserToCart(

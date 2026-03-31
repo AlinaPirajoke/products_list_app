@@ -13,8 +13,11 @@ interface CartDao {
     suspend fun upsert(cart: CartDbEntity)
 
     @Query("SELECT * FROM carts WHERE id = :id")
-    suspend fun getCartById(id: Int): CartDbEntity?
+    suspend fun getCartById(id: Long): CartDbEntity?
 
     @Query("SELECT * FROM carts")
     suspend fun getCarts(): List<CartDbEntity>
+
+    @Query("DELETE FROM carts WHERE id = :id")
+    suspend fun deleteById(id: Long)
 }

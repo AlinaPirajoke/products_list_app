@@ -7,8 +7,24 @@
     <string name="empty_home_feed_label">У вас пока нет списков</string>
 
     <plurals name="trimmed_list_caption">
-        <item quantity="one">Ещё %d элемент</item>
-        <item quantity="few">Ещё %d элемента</item>
-        <item quantity="many">Ещё %d элементов</item>
+        <item quantity="one">Ещё %d продукт</item>
+        <item quantity="few">Ещё %d продукта</item>
+        <item quantity="many">Ещё %d продуктов</item>
     </plurals>
+
+    <string name="join_list_screen_title">Добавить список по коду</string>
+    <string name="join_list_code_label">Код списка</string>
+    <string name="join_list_code_supporting">Введите код, которым с вами поделились</string>
+    <string name="join_list_submit">Добавить список</string>
+
+    <string name="edit_list_screen_title">Список</string>
+    <string name="edit_list_name_label">Название списка</string>
+    <string name="edit_list_code_label">Код списка</string>
+    <string name="edit_list_code_placeholder">Код появится после загрузки</string>
+    <string name="edit_list_leave">Выйти из списка</string>
+
+    <string name="content_desc_back">Назад</string>
+    <string name="content_desc_open_list_settings">Настройки списка</string>
+    <string name="content_desc_fab_add_list_by_code">Добавить список по коду</string>
+    <string name="content_desc_fab_add_product">Добавить товар в список</string>
 </resources>

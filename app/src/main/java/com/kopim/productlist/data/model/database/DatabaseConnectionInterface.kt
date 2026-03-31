@@ -39,4 +39,6 @@ interface DatabaseConnectionInterface {
     suspend fun removeCart(cartId: Long)
 
     suspend fun getCarts(): List<ShortCartData>
+
+    suspend fun updateCartFeedName(cartId: Long, name: String)
 }

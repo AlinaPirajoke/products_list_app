@@ -2,7 +2,9 @@ package com.kopim.productlist.data.model.database
 
 import android.util.Log
 import com.kopim.productlist.data.model.database.entities.CartDbEntity
+import com.kopim.productlist.data.model.database.entities.CartFeedCacheEntity
 import com.kopim.productlist.data.model.database.utils.AppDatabase
+import com.kopim.productlist.data.model.database.utils.CartFeedPreviewJson
 import com.kopim.productlist.data.utils.Hint
 import com.kopim.productlist.data.utils.LocalChange
 import com.kopim.productlist.data.utils.ProductData.Companion.applyCheckChanges
@@ -108,14 +110,41 @@ class DatabaseConnection(val database: AppDatabase) : DatabaseConnectionInterfac
     }
 
     override suspend fun addCartsData(carts: List<ShortCartData>) {
-        TODO("Not yet implemented")
+        val existingCodes = database.cartFeedCacheDao().getAll().associate { it.cartId to it.inviteCode }
+        val entities = carts.map { cart ->
+            val mergedCode = cart.inviteCode ?: existingCodes[cart.id]
+            cart.copy(inviteCode = mergedCode).toFeedCacheEntity()
+        }
+        database.cartFeedCacheDao().replaceAll(entities)
     }
 
     override suspend fun removeCart(cartId: Long) {
-        TODO("Not yet implemented")
+        database.cartFeedCacheDao().deleteByCartId(cartId)
+        database.cartDao().deleteById(cartId)
     }
 
-    override suspend fun getCarts(): List<ShortCartData> {
-        TODO("Not yet implemented")
+    override suspend fun getCarts(): List<ShortCartData> =
+        database.cartFeedCacheDao().getAll().map { it.toShortCartData() }
+
+    override suspend fun updateCartFeedName(cartId: Long, name: String) {
+        database.cartFeedCacheDao().updateName(cartId, name)
     }
 }
+
+private fun ShortCartData.toFeedCacheEntity(): CartFeedCacheEntity =
+    CartFeedCacheEntity(
+        cartId = id,
+        name = name,
+        previewJson = CartFeedPreviewJson.encode(items.map { it.name }),
+        inviteCode = inviteCode,
+    )
+
+private fun CartFeedCacheEntity.toShortCartData(): ShortCartData =
+    ShortCartData(
+        name = name,
+        id = cartId,
+        items = CartFeedPreviewJson.decode(previewJson).map {
+            ShortCartData.ShortListItemData(name = it)
+        },
+        inviteCode = inviteCode,
+    )

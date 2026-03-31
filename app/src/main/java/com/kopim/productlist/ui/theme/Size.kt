@@ -3,6 +3,10 @@ package com.kopim.productlist.ui.theme
 import androidx.compose.ui.unit.dp
 
 val defaultPadding = 16.dp
+/** Отступ текста заголовка от кнопки «назад» в [com.kopim.productlist.ui.components.ScreenTitle]. */
+val titleBarTextStartPadding = 8.dp
+/** Вертикальный зазор между секциями формы на экранах настроек списка. */
+val screenSectionSpacing = 24.dp
 val defaultHorizontalEdgePadding = 16.dp
 val defaultVerticalEdgePadding = 16.dp
 val thinPadding = 12.dp
@@ -10,7 +14,7 @@ val listCardPadding = 4.dp
 
 val cartListSpacing = 8.dp
 
-val componentSize = 48.dp
+val componentSize = 40.dp
 
 val defaultElevation = 3.dp
 
@@ -44,5 +48,8 @@ val listPreviewCardWidth = 400.dp
 val listPreviewCardInnerPadding = 12.dp
 val listPreviewCardOuterPadding = 16.dp
 val listPreviewCardInterElementSpace = 6.dp
+
+/** Высота блока «добавить список» (пунктир) и нижнего отступа под FAB на ленте. */
+val homeFeedAddListSlotHeight = componentSize * 2
 
 //val inputFieldVerticalPadding = 12.dp

@@ -12,7 +12,9 @@ object DatabaseProvider {
                 context.applicationContext,
                 AppDatabase::class.java,
                 "products_database"
-            ).build().also { INSTANCE = it }
+            )
+                .addMigrations(DatabaseMigrations.MIGRATION_1_2)
+                .build().also { INSTANCE = it }
         }
     }
 }

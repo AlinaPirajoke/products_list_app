@@ -12,7 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val surfaceWhite = Color(0xFFFCFCFC)
 val dirtyWhite = Color(0xFFF1F1F1)
-val paleBlue = Color(0xFFF2FBFF)
+val paleBlue = Color(0xFFEBF7FF)
 val lightBlue = Color(0xFF81D4FA)
 val deepBlue = Color(0xFF72A7D0)
 val warningRed = Color(0xFFFFAB91)

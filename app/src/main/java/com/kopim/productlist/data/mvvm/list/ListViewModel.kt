@@ -24,7 +24,10 @@ import kotlinx.coroutines.launch
 private const val ADDITION_LIST_DELAY = 150L
 private const val TAG = "ListViewModel"
 
-class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
+class ListViewModel(
+    val dataSource: ListDataSourceInterface,
+    private val cartMetadataPort: ListCartMetadataPort,
+) : BaseViewModel() {
     private val _state = MutableStateFlow(ListUiState())
     val state: StateFlow<ListUiState> = _state.asStateFlow()
 
@@ -33,6 +36,17 @@ class ListViewModel(val dataSource: ListDataSourceInterface) : BaseViewModel() {
 
     fun setListId(newListId: Long) {
         listId = newListId
+        viewModelScope.launch {
+            _state.update { it.copy(listTitle = null) }
+            cartMetadataPort.loadCartHeader(newListId).fold(
+                onSuccess = { header ->
+                    _state.update { state ->
+                        state.copy(listTitle = header.title)
+                    }
+                },
+                onFailure = { }
+            )
+        }
     }
 
     private fun updateHints(query: String) {
