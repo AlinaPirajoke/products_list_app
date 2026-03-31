@@ -51,5 +51,6 @@ val listPreviewCardInterElementSpace = 6.dp
 
 /** Высота блока «добавить список» (пунктир) и нижнего отступа под FAB на ленте. */
 val homeFeedAddListSlotHeight = componentSize * 2
+val topIconSize = 28.dp
 
 //val inputFieldVerticalPadding = 12.dp

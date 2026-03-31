@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kopim.productlist.ui.theme.ProductsTheme
 import com.kopim.productlist.ui.theme.defaultPadding
 import com.kopim.productlist.ui.theme.titleBarTextStartPadding
 
@@ -38,7 +40,6 @@ fun ScreenTitle(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            navigationIcon?.invoke()
             Column(
                 modifier = Modifier.padding(
                     start = if (navigationIcon != null) titleBarTextStartPadding else 0.dp
@@ -58,12 +59,20 @@ fun ScreenTitle(
                 }
             }
         }
-        if (actions != null) {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                content = actions
-            )
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            navigationIcon?.invoke()
+            actions?.invoke(this)
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ScreenTitlePreview() {
+    ProductsTheme {
+        ScreenTitle(text = "Ваши списки", subtitle = "3 активных")
     }
 }

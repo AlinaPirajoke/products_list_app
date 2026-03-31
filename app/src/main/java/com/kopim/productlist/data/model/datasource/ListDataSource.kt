@@ -29,6 +29,7 @@ class ListDataSource(
     private val actualListData: MutableStateFlow<ProductListData?> = MutableStateFlow(null)
 
     private var cartObserverJob: Job? = null
+    private var incomingCartObserverJob: Job? = null
 
     private suspend fun synchronize(listId: Long) {
         Log.d(TAG, "Synchronizing")
@@ -57,6 +58,9 @@ class ListDataSource(
 
     override suspend fun listSubscribe(id: Long, updateDelay: Long): StateFlow<ProductListData?> {
         Log.i(TAG, "Subscribing on list")
+        cartObserverJob?.cancel()
+        incomingCartObserverJob?.cancel()
+
         cartObserverJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
                 synchronize(id)
@@ -65,7 +69,7 @@ class ListDataSource(
         }
         Log.i(TAG, "Subscribed on list")
 
-        CoroutineScope(Dispatchers.IO).launch {
+        incomingCartObserverJob = CoroutineScope(Dispatchers.IO).launch {
             nc.lastIncomingCartData.collect {
                 it?.let {
                     actualListData.emit(it)
@@ -80,6 +84,7 @@ class ListDataSource(
 
     override fun listUnsubscribe(): Unit {
         cartObserverJob?.cancel()
+        incomingCartObserverJob?.cancel()
         Log.i(TAG, "Unsubscribed from list")
     }
 

@@ -34,6 +34,7 @@ import com.kopim.productlist.data.mvvm.joinlist.JoinListByCodeViewModel
 import com.kopim.productlist.ui.components.BackNavigationButton
 import com.kopim.productlist.ui.components.ScreenTitle
 import com.kopim.productlist.ui.theme.defaultHorizontalEdgePadding
+import com.kopim.productlist.ui.theme.defaultVerticalEdgePadding
 import com.kopim.productlist.ui.theme.screenSectionSpacing
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -63,6 +64,7 @@ fun JoinListByCodeScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .imePadding()
+                .padding(vertical = defaultVerticalEdgePadding),
         ) {
             ScreenTitle(
                 text = stringResource(R.string.join_list_screen_title),

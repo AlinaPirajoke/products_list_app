@@ -26,16 +26,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.kopim.productlist.R
 import com.kopim.productlist.data.mvvm.NavCommand
 import com.kopim.productlist.data.mvvm.homefeed.HomeFeedViewModel
+import com.kopim.productlist.data.utils.ShortCartData
 import com.kopim.productlist.ui.components.AddNewListButton
 import com.kopim.productlist.ui.components.DefaultFab
 import com.kopim.productlist.ui.components.ListPreviewCard
 import com.kopim.productlist.ui.components.ScreenTitle
 import com.kopim.productlist.ui.navigation.JoinListByCodeNavPoint
+import com.kopim.productlist.ui.theme.ProductsTheme
 import com.kopim.productlist.ui.theme.defaultHorizontalEdgePadding
 import com.kopim.productlist.ui.theme.homeFeedAddListSlotHeight
 import com.kopim.productlist.ui.theme.listPreviewCardOuterPadding
@@ -116,6 +119,48 @@ fun HomeFeedScreen(
                         } else {
                             AddNewListButton(onClick = onAddList)
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeFeedScreenPreview() {
+    val previewLists = listOf(
+        ShortCartData(
+            name = "Название списка",
+            id = 1,
+            items = listOf(
+                ShortCartData.ShortListItemData("Продукт 1"),
+                ShortCartData.ShortListItemData("Продукт 2"),
+                ShortCartData.ShortListItemData("Продукт 3"),
+                ShortCartData.ShortListItemData("Продукт 4"),
+                ShortCartData.ShortListItemData("Продукт 5"),
+                ShortCartData.ShortListItemData("Продукт 6"),
+            )
+        )
+    )
+    ProductsTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                ScreenTitle(text = "Ваши списки:")
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = defaultHorizontalEdgePadding),
+                    verticalArrangement = Arrangement.spacedBy(listPreviewCardOuterPadding)
+                ) {
+                    items(previewLists, key = { it.id }) { listData ->
+                        ListPreviewCard(model = listData)
+                    }
+                    item {
+                        AddNewListButton(onClick = {})
                     }
                 }
             }

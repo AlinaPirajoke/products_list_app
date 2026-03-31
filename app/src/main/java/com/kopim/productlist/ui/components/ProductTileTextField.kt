@@ -14,6 +14,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import com.kopim.productlist.ui.theme.ProductsTheme
 
 @Composable
 fun ProductTileTextField(
@@ -42,5 +44,17 @@ fun ProductTileTextField(
         ) {
             field()
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ProductTileTextFieldPreview() {
+    ProductsTheme {
+        ProductTileTextField(
+            text = TextFieldValue("Хлеб"),
+            onEdit = {},
+            onConfirm = {},
+        )
     }
 }

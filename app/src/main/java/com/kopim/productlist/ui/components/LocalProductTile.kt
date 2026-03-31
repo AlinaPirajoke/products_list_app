@@ -104,3 +104,13 @@ fun LocalProductTile(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun LocalProductTilePreview() {
+    ProductsTheme {
+        LocalProductTile(
+            data = LocalChange.AdditionChange(name = "Новый продукт", cartId = 1L)
+        )
+    }
+}

@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.kopim.productlist.data.utils.Hint
+import androidx.compose.ui.tooling.preview.Preview
+import com.kopim.productlist.ui.theme.ProductsTheme
 import com.kopim.productlist.ui.theme.badgeHeight
 import com.kopim.productlist.ui.theme.badgeOuterPadding
 import com.kopim.productlist.ui.theme.badgeTextPadding
@@ -32,5 +34,13 @@ fun HintBadge(
                 badgeTextPadding
             )
         )
+    }
+}
+
+@Preview
+@Composable
+private fun HintBadgePreview() {
+    ProductsTheme {
+        HintBadge(hint = Hint(id = 1, name = "Молоко", mentions = 12))
     }
 }

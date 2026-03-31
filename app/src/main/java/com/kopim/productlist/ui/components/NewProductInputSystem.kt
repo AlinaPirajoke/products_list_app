@@ -26,7 +26,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import com.kopim.productlist.data.utils.Hint
+import com.kopim.productlist.ui.theme.ProductsTheme
 import com.kopim.productlist.ui.theme.hintBoxHeight
 import com.kopim.productlist.ui.theme.hintBoxWidth
 import kotlinx.coroutines.delay
@@ -100,6 +102,24 @@ fun NewProductInputSystem(
                 focusManager.clearFocus()
                 keyboardController?.hide()
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NewProductInputSystemPreview() {
+    ProductsTheme {
+        NewProductInputSystem(
+            text = TextFieldValue("Молоко"),
+            expanded = true,
+            onEdit = {},
+            onConfirm = {},
+            onHintPick = {},
+            onHide = {},
+            hints = listOf(Hint(1, "Яйца", 10), Hint(2, "Сыр", 8)),
+        ) {
+            Box(Modifier.fillMaxSize())
         }
     }
 }

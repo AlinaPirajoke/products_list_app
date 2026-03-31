@@ -9,6 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import com.kopim.productlist.ui.theme.ProductsTheme
 import com.kopim.productlist.ui.theme.iconButtonIconPadding
 import com.kopim.productlist.ui.theme.iconButtonSize
 
@@ -33,5 +35,13 @@ fun SquareButton(
         Box(Modifier.padding(iconButtonIconPadding)) {
             content()
         }
+    }
+}
+
+@Preview
+@Composable
+private fun SquareButtonPreview() {
+    ProductsTheme {
+        SquareButton(onClick = {}) {}
     }
 }

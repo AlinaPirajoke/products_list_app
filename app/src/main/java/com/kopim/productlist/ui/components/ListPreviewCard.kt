@@ -16,8 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import com.kopim.productlist.R
 import com.kopim.productlist.data.utils.ShortCartData
+import com.kopim.productlist.ui.theme.ProductsTheme
 import com.kopim.productlist.ui.theme.listPreviewCardInnerPadding
 import com.kopim.productlist.ui.theme.listPreviewCardInterElementSpace
 import com.kopim.productlist.ui.theme.listPreviewCardMaxHeight
@@ -85,5 +87,26 @@ fun ListPreviewCard(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ListPreviewCardPreview() {
+    ProductsTheme {
+        ListPreviewCard(
+            model = ShortCartData(
+                name = "Список на неделю",
+                id = 1L,
+                items = listOf(
+                    ShortCartData.ShortListItemData("Хлеб"),
+                    ShortCartData.ShortListItemData("Молоко"),
+                    ShortCartData.ShortListItemData("Яйца"),
+                    ShortCartData.ShortListItemData("Сыр"),
+                    ShortCartData.ShortListItemData("Фрукты"),
+                    ShortCartData.ShortListItemData("Овощи"),
+                )
+            )
+        )
     }
 }

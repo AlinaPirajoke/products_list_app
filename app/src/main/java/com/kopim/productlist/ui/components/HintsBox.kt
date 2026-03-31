@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.kopim.productlist.data.utils.Hint
+import com.kopim.productlist.ui.theme.ProductsTheme
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -27,5 +29,20 @@ fun HintsBox(
                 HintBadge(hint, Modifier.clickable { onPick(hint) })
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun HintsBoxPreview() {
+    ProductsTheme {
+        HintsBox(
+            hints = listOf(
+                Hint(1, "Молоко", 1),
+                Hint(2, "Яйца", 1),
+                Hint(3, "Сыр", 1),
+            ),
+            onPick = {}
+        )
     }
 }
