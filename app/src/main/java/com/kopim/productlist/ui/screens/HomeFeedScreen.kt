@@ -2,6 +2,7 @@ package com.kopim.productlist.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -22,7 +26,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +40,7 @@ import com.kopim.productlist.R
 import com.kopim.productlist.data.mvvm.NavCommand
 import com.kopim.productlist.data.mvvm.homefeed.HomeFeedViewModel
 import com.kopim.productlist.data.utils.ShortCartData
+import com.kopim.productlist.ui.components.AccountSidebarOverlay
 import com.kopim.productlist.ui.components.AddNewListButton
 import com.kopim.productlist.ui.components.DefaultFab
 import com.kopim.productlist.ui.components.ListPreviewCard
@@ -52,6 +60,7 @@ fun HomeFeedScreen(
     val listState = rememberLazyListState()
     val state by vm.state.collectAsState()
     val navigator = LocalNavigator.currentOrThrow
+    var accountDrawerOpen by rememberSaveable { mutableStateOf(false) }
 
     val showAddAsFab by remember {
         derivedStateOf {
@@ -92,35 +101,57 @@ fun HomeFeedScreen(
                 .background(color = MaterialTheme.colorScheme.surface)
                 .padding(innerPadding)
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                ScreenTitle(
-                    text = stringResource(
-                        if (state.lists.isEmpty()) R.string.empty_home_feed_label
-                        else R.string.default_home_feed_label
+            Box(Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    ScreenTitle(
+                        text = stringResource(
+                            if (state.lists.isEmpty()) R.string.empty_home_feed_label
+                            else R.string.default_home_feed_label
+                        ),
+                        actions = {
+                            IconButton(onClick = { accountDrawerOpen = true }) {
+                                Icon(
+                                    imageVector = Icons.Filled.MoreVert,
+                                    contentDescription = stringResource(R.string.content_desc_open_account_menu),
+                                    tint = MaterialTheme.colorScheme.primaryContainer,
+                                )
+                            }
+                        },
                     )
-                )
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = defaultHorizontalEdgePadding),
-                    contentPadding = PaddingValues(bottom = listPreviewCardOuterPadding),
-                    verticalArrangement = Arrangement.spacedBy(listPreviewCardOuterPadding)
-                ) {
-                    items(
-                        items = state.lists,
-                        key = { it.id }
-                    ) { listData ->
-                        ListPreviewCard(listData) { vm.onNavigateToList(listData.id) }
-                    }
-                    item(key = "add_list_footer") {
-                        if (showAddAsFab) {
-                            Spacer(Modifier.height(homeFeedAddListSlotHeight))
-                        } else {
-                            AddNewListButton(onClick = onAddList)
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = defaultHorizontalEdgePadding),
+                        contentPadding = PaddingValues(bottom = listPreviewCardOuterPadding),
+                        verticalArrangement = Arrangement.spacedBy(listPreviewCardOuterPadding)
+                    ) {
+                        items(
+                            items = state.lists,
+                            key = { it.id }
+                        ) { listData ->
+                            ListPreviewCard(listData) { vm.onNavigateToList(listData.id) }
+                        }
+                        item(key = "add_list_footer") {
+                            if (showAddAsFab) {
+                                Spacer(Modifier.height(homeFeedAddListSlotHeight))
+                            } else {
+                                AddNewListButton(onClick = onAddList)
+                            }
                         }
                     }
                 }
+                AccountSidebarOverlay(
+                    visible = accountDrawerOpen,
+                    state = state.account,
+                    onDismiss = { accountDrawerOpen = false },
+                    onNameClick = vm::onAccountNameClick,
+                    onNameDraftChange = vm::onAccountNameDraftChange,
+                    onPasswordLabelClick = vm::onAccountPasswordLabelClick,
+                    onPasswordDraftChange = vm::onAccountPasswordDraftChange,
+                    onSubmitChanges = vm::onAccountSubmitChanges,
+                    onColorChangeClick = vm::onAccountColorChangeRequest,
+                )
             }
         }
     }

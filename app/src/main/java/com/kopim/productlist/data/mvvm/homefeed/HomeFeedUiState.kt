@@ -4,4 +4,5 @@ import com.kopim.productlist.data.utils.ShortCartData
 
 data class HomeFeedUiState(
     val lists: List<ShortCartData> = emptyList(),
+    val account: AccountSidebarState = AccountSidebarState(),
 )

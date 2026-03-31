@@ -40,6 +40,7 @@ fun ScreenTitle(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
+            navigationIcon?.invoke()
             Column(
                 modifier = Modifier.padding(
                     start = if (navigationIcon != null) titleBarTextStartPadding else 0.dp
@@ -63,7 +64,6 @@ fun ScreenTitle(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            navigationIcon?.invoke()
             actions?.invoke(this)
         }
     }

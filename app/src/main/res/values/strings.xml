@@ -27,4 +27,10 @@
     <string name="content_desc_open_list_settings">Настройки списка</string>
     <string name="content_desc_fab_add_list_by_code">Добавить список по коду</string>
     <string name="content_desc_fab_add_product">Добавить товар в список</string>
+    <string name="content_desc_open_account_menu">Меню аккаунта</string>
+
+    <string name="account_user_id_format">ID: %1$s</string>
+    <string name="account_password_label">Пароль</string>
+    <string name="account_submit_changes">Изменить</string>
+    <string name="account_want_other_color">Я хочу другой цвет</string>
 </resources>
