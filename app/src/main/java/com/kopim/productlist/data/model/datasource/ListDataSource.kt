@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "ListDataSource"
 
@@ -30,6 +31,7 @@ class ListDataSource(
 
     private var cartObserverJob: Job? = null
     private var incomingCartObserverJob: Job? = null
+    private var initialNetworkFetchJob: Job? = null
 
     private suspend fun synchronize(listId: Long) {
         Log.d(TAG, "Synchronizing")
@@ -60,6 +62,13 @@ class ListDataSource(
         Log.i(TAG, "Subscribing on list")
         cartObserverJob?.cancel()
         incomingCartObserverJob?.cancel()
+        initialNetworkFetchJob?.cancel()
+
+        // Сразу отдать снимок из Room. Раньше первая эмиссия шла только после pushUpdates() в цикле
+        // (сеть), из‑за этого список долго оставался пустым.
+        withContext(Dispatchers.IO) {
+            fetchProductsFromDatabase(id)
+        }
 
         cartObserverJob = CoroutineScope(Dispatchers.IO).launch {
             while (true) {
@@ -77,7 +86,10 @@ class ListDataSource(
                 }
             }
         }
-        fetchProductsFromNetwork(id)
+        // Не блокируем возврат StateFlow ожиданием сети — подписчик сразу получает кэш из БД.
+        initialNetworkFetchJob = CoroutineScope(Dispatchers.IO).launch {
+            fetchProductsFromNetwork(id)
+        }
 
         return actualListData.asStateFlow()
     }
@@ -85,6 +97,7 @@ class ListDataSource(
     override fun listUnsubscribe(): Unit {
         cartObserverJob?.cancel()
         incomingCartObserverJob?.cancel()
+        initialNetworkFetchJob?.cancel()
         Log.i(TAG, "Unsubscribed from list")
     }
 

@@ -89,6 +89,7 @@ fun HomeFeedScreen(
     }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
         floatingActionButton = {
             if (showAddAsFab) {
                 DefaultFab(onClick = onAddList) {
@@ -191,7 +192,7 @@ private fun HomeFeedScreenPreview() {
     ProductsTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.surface
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 ScreenTitle(text = "Ваши списки:")

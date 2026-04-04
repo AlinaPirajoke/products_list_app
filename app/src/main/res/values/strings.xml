@@ -39,6 +39,8 @@
     <string name="account_switch_profile">Войти в другой профиль</string>
     <string name="account_sign_in_link">Войти по ID и паролю</string>
     <string name="account_want_other_color">Я хочу другой цвет</string>
+    <string name="account_name_tap_to_set">Нажмите сюда, чтобы задать имя</string>
+    <string name="account_password_tap_to_set">Нажмите сюда, чтобы задать пароль</string>
 
     <string name="login_screen_title">Вход в аккаунт</string>
     <string name="login_id_label">ID</string>

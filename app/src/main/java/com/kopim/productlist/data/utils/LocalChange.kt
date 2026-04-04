@@ -33,3 +33,14 @@ sealed class LocalChange(
     }
 }
 
+/** Стабильный ключ для [androidx.compose.foundation.lazy.LazyListScope.items] и анимаций. */
+fun LocalChange.stableLazyKey(): String =
+    when (this) {
+        is LocalChange.AdditionChange ->
+            "add_${changeId ?: "n"}_${cartId}_${name.hashCode()}"
+        is LocalChange.CheckChange ->
+            "check_${changeId ?: "n"}_${itemId}_$checked"
+        is LocalChange.RenameChange ->
+            "rename_${changeId ?: "n"}_${itemId}_${newName.hashCode()}"
+    }
+

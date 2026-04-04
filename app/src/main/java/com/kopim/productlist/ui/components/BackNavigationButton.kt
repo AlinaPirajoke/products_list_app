@@ -18,7 +18,7 @@ fun BackNavigationButton(
     onClick: () -> Unit,
     contentDescription: String,
     modifier: Modifier = Modifier,
-    tint: Color = MaterialTheme.colorScheme.onBackground,
+    tint: Color = MaterialTheme.colorScheme.primaryContainer,
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(

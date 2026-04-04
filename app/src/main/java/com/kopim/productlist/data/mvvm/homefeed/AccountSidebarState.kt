@@ -16,6 +16,10 @@ data class AccountSidebarState(
     val passwordDraft: String = "",
     /** Строка цвета, как `user_color` в API корзины. */
     val profileColor: String = ProfileColorString.DEFAULT,
+    /**
+     * См. [com.kopim.productlist.data.model.database.SharedPreferencesManager.accountPasswordSessionKnown].
+     */
+    val passwordSessionKnown: Boolean = false,
 ) {
     val anyFieldActive: Boolean
         get() = isNameEditing || isPasswordEditing
@@ -31,6 +35,5 @@ fun AccountSidebarState.withSyncedProfile(profile: UserProfile?): AccountSidebar
         displayName = if (!isNameEditing) profile.displayName else displayName,
         nameDraft = if (!isNameEditing) profile.displayName else nameDraft,
         profileColor = profile.profileColor,
-        password = "",
     )
 }

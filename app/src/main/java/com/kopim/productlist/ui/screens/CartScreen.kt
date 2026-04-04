@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+
 package com.kopim.productlist.ui.screens
 
 import androidx.compose.foundation.layout.Column
@@ -34,6 +36,7 @@ import com.kopim.productlist.data.mvvm.NavCommand
 import com.kopim.productlist.data.mvvm.list.ListViewModel
 import com.kopim.productlist.data.utils.ListScreenMode
 import com.kopim.productlist.data.utils.LocalChange
+import com.kopim.productlist.data.utils.stableLazyKey
 import com.kopim.productlist.data.utils.ProductUiData
 import com.kopim.productlist.ui.components.BackNavigationButton
 import com.kopim.productlist.ui.components.DefaultFab
@@ -45,6 +48,7 @@ import com.kopim.productlist.ui.navigation.EditListNavPoint
 import com.kopim.productlist.ui.theme.ProductsTheme
 import com.kopim.productlist.ui.theme.cartListSpacing
 import com.kopim.productlist.ui.theme.defaultHorizontalEdgePadding
+import com.kopim.productlist.ui.theme.textBlack
 import com.kopim.productlist.ui.theme.thinPadding
 import com.kopim.productlist.ui.theme.topIconSize
 import org.koin.compose.viewmodel.koinViewModel
@@ -87,6 +91,7 @@ fun CartScreen(
         onHintPick = vm::onHintPick,
     ) {
         Scaffold(
+            containerColor = MaterialTheme.colorScheme.background,
             floatingActionButton = {
                 DefaultFab(onClick = vm::enterAdditionMode) {
                     Icon(
@@ -112,7 +117,7 @@ fun CartScreen(
                             BackNavigationButton(
                                 onClick = { navigator.pop() },
                                 contentDescription = stringResource(R.string.content_desc_back),
-                                tint = MaterialTheme.colorScheme.primaryContainer
+                                tint = textBlack,
                             )
                         },
                         actions = {
@@ -123,7 +128,7 @@ fun CartScreen(
                                     modifier = Modifier.size(topIconSize),
                                     painter = painterResource(R.drawable.settings),
                                     contentDescription = stringResource(R.string.content_desc_open_list_settings),
-                                    tint = MaterialTheme.colorScheme.primaryContainer,
+                                    tint = textBlack,
                                 )
                             }
                         }
@@ -135,20 +140,30 @@ fun CartScreen(
                             .padding(horizontal = defaultHorizontalEdgePadding),
                         state = listState
                     ) {
-                        items(state.localProducts) { item ->
-                            LocalProductTile(item)
-                            Spacer(modifier = Modifier.height(cartListSpacing))
+                        items(
+                            items = state.localProducts,
+                            key = { it.stableLazyKey() },
+                        ) { item ->
+                            Column(Modifier.animateItem()) {
+                                LocalProductTile(item)
+                                Spacer(modifier = Modifier.height(cartListSpacing))
+                            }
                         }
-                        items(state.cart, key = { item -> item.id }) { item ->
-                            ProductTile(
-                                data = item,
-                                onPick = { vm.selectItem(item.id) },
-                                onDelete = { vm.onCheck(item.id) },
-                                onEdit = { vm.onEditionStart(item.id) },
-                                onTextChange = { vm.onEditionFieldTextChange(item.id, it) },
-                                onChangeConfirm = { vm.onEditionConfirm(item.id) }
-                            )
-                            Spacer(modifier = Modifier.height(cartListSpacing))
+                        items(
+                            items = state.cart,
+                            key = { item -> item.id },
+                        ) { item ->
+                            Column(Modifier.animateItem()) {
+                                ProductTile(
+                                    data = item,
+                                    onPick = { vm.selectItem(item.id) },
+                                    onDelete = { vm.onCheck(item.id) },
+                                    onEdit = { vm.onEditionStart(item.id) },
+                                    onTextChange = { vm.onEditionFieldTextChange(item.id, it) },
+                                    onChangeConfirm = { vm.onEditionConfirm(item.id) },
+                                )
+                                Spacer(modifier = Modifier.height(cartListSpacing))
+                            }
                         }
                     }
                 }
@@ -178,6 +193,7 @@ private fun CartScreenPreview() {
             onHintPick = {},
         ) {
             Scaffold(
+                containerColor = MaterialTheme.colorScheme.background,
                 floatingActionButton = {
                     DefaultFab(onClick = {}) {
                         Icon(
@@ -202,20 +218,30 @@ private fun CartScreenPreview() {
                                 .fillMaxWidth()
                                 .padding(horizontal = defaultHorizontalEdgePadding),
                         ) {
-                            items(locals) { item ->
-                                LocalProductTile(item)
-                                Spacer(modifier = Modifier.height(cartListSpacing))
+                            items(
+                                items = locals,
+                                key = { it.stableLazyKey() },
+                            ) { item ->
+                                Column(Modifier.animateItem()) {
+                                    LocalProductTile(item)
+                                    Spacer(modifier = Modifier.height(cartListSpacing))
+                                }
                             }
-                            items(products, key = { item -> item.id }) { item ->
-                                ProductTile(
-                                    data = item,
-                                    onPick = {},
-                                    onDelete = {},
-                                    onEdit = {},
-                                    onTextChange = {},
-                                    onChangeConfirm = {}
-                                )
-                                Spacer(modifier = Modifier.height(cartListSpacing))
+                            items(
+                                items = products,
+                                key = { item -> item.id },
+                            ) { item ->
+                                Column(Modifier.animateItem()) {
+                                    ProductTile(
+                                        data = item,
+                                        onPick = {},
+                                        onDelete = {},
+                                        onEdit = {},
+                                        onTextChange = {},
+                                        onChangeConfirm = {},
+                                    )
+                                    Spacer(modifier = Modifier.height(cartListSpacing))
+                                }
                             }
                         }
                     }

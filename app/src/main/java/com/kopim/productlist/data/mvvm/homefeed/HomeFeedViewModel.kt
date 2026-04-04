@@ -1,6 +1,7 @@
 package com.kopim.productlist.data.mvvm.homefeed
 
 import androidx.lifecycle.viewModelScope
+import com.kopim.productlist.data.model.database.SharedPreferencesManager
 import com.kopim.productlist.data.model.datasource.CartsDataSourceInterface
 import com.kopim.productlist.data.model.profile.ProfileColorString
 import com.kopim.productlist.data.model.profile.UserProfileRepository
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class HomeFeedViewModel(
     private val dataSource: CartsDataSourceInterface,
     private val userProfileRepository: UserProfileRepository,
+    private val sharedPreferencesManager: SharedPreferencesManager,
 ) : BaseViewModel() {
     private val _state = MutableStateFlow(HomeFeedUiState())
     val state: StateFlow<HomeFeedUiState> = _state.asStateFlow()
@@ -26,12 +28,25 @@ class HomeFeedViewModel(
         viewModelScope.launch {
             userProfileRepository.profileFlow.collect { profile ->
                 _state.update { s ->
-                    s.copy(account = s.account.withSyncedProfile(profile))
+                    s.copy(
+                        account = s.account.withSyncedProfile(profile).copy(
+                            passwordSessionKnown = sharedPreferencesManager.accountPasswordSessionKnown,
+                            password = sharedPreferencesManager.storedAccountPassword,
+                        ),
+                    )
                 }
             }
         }
         viewModelScope.launch {
             userProfileRepository.credentialsSignInEvents.collect {
+                _state.update { s ->
+                    s.copy(
+                        account = s.account.copy(
+                            password = sharedPreferencesManager.storedAccountPassword,
+                            passwordSessionKnown = sharedPreferencesManager.accountPasswordSessionKnown,
+                        ),
+                    )
+                }
                 refreshCarts()
             }
         }
@@ -105,7 +120,7 @@ class HomeFeedViewModel(
             else s.copy(
                 account = a.copy(
                     isPasswordEditing = true,
-                    passwordDraft = "",
+                    passwordDraft = a.password,
                 )
             )
         }
@@ -118,7 +133,7 @@ class HomeFeedViewModel(
             else s.copy(
                 account = a.copy(
                     isPasswordEditing = false,
-                    passwordDraft = "",
+                    passwordDraft = a.password,
                 )
             )
         }
@@ -152,10 +167,11 @@ class HomeFeedViewModel(
                     account = acc.copy(
                         isNameEditing = false,
                         isPasswordEditing = false,
-                        passwordDraft = "",
-                        password = "",
+                        passwordDraft = acc.password,
+                        password = sharedPreferencesManager.storedAccountPassword,
                         nameDraft = acc.displayName,
-                    )
+                        passwordSessionKnown = sharedPreferencesManager.accountPasswordSessionKnown,
+                    ),
                 )
             }
         }

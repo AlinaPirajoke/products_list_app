@@ -66,13 +66,19 @@ class UserProfileRepositoryImpl(
             !resp.isSuccessful -> Result.failure(
                 HttpStatusException(resp.code(), resp.message()),
             )
-            else -> Result.success(Unit)
+            else -> {
+                spm.accountPasswordSessionKnown = true
+                spm.storedAccountPassword = newPassword
+                Result.success(Unit)
+            }
         }
     }
 
     override suspend fun switchToAnotherProfile(): Result<Unit> = withContext(Dispatchers.IO) {
         dao.clear()
         spm.userToken = null
+        spm.accountPasswordSessionKnown = false
+        spm.storedAccountPassword = ""
         if (!network.relogin()) {
             return@withContext Result.failure(IllegalStateException("Не удалось войти под новым профилем"))
         }
@@ -105,6 +111,8 @@ class UserProfileRepositoryImpl(
                     val token = resp.body()!!.token
                     localDb.clearAllSessionData()
                     spm.userToken = token
+                    spm.accountPasswordSessionKnown = true
+                    spm.storedAccountPassword = credentials.password
                     refreshFromServer().fold(
                         onSuccess = {
                             _credentialsSignInEvents.tryEmit(Unit)

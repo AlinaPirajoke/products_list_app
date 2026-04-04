@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kopim.productlist.R
@@ -103,21 +104,32 @@ internal fun NameSection(
                     )
                 }
             } else {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                if (state.displayName.isBlank()) {
                     Text(
-                        text = stringResource(R.string.account_name_label) + ": ",
-                        style = labelStyle,
-                    )
-                    Text(
-                        text = state.displayName,
+                        text = stringResource(R.string.account_name_tap_to_set),
                         style = labelStyle,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.sidebarClickable(onNameValueClick),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .sidebarClickable(onNameValueClick),
                     )
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.account_name_label) + ": ",
+                            style = labelStyle,
+                        )
+                        Text(
+                            text = state.displayName,
+                            style = labelStyle,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.sidebarClickable(onNameValueClick),
+                        )
+                    }
                 }
             }
         }
@@ -162,6 +174,7 @@ internal fun PasswordSection(
                             .fillMaxWidth()
                             .padding(top = 4.dp),
                         singleLine = true,
+                        visualTransformation = VisualTransformation.None,
                         textStyle = MaterialTheme.typography.bodyMedium.copy(
                             color = textBlack,
                             textAlign = TextAlign.Center,
@@ -170,16 +183,30 @@ internal fun PasswordSection(
                     )
                 }
             } else {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                if (!state.passwordSessionKnown) {
                     Text(
-                        text = stringResource(R.string.account_password_label) + ": ",
+                        text = stringResource(R.string.account_password_tap_to_set),
                         style = labelStyle,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .sidebarClickable(onPasswordMaskClick),
                     )
-                    PasswordMask(onClick = onPasswordMaskClick)
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.account_password_label) + ": ",
+                            style = labelStyle,
+                        )
+                        PasswordMask(
+                            onClick = onPasswordMaskClick,
+                            dotCount = state.password.length.takeIf { it > 0 } ?: 6,
+                        )
+                    }
                 }
             }
         }
@@ -187,13 +214,17 @@ internal fun PasswordSection(
 }
 
 @Composable
-private fun PasswordMask(onClick: () -> Unit) {
+private fun PasswordMask(
+    onClick: () -> Unit,
+    dotCount: Int = 6,
+) {
+    val n = dotCount.coerceIn(1, 64)
     Row(
         modifier = Modifier.sidebarClickable(onClick),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        repeat(6) {
+        repeat(n) {
             Box(
                 modifier = Modifier
                     .size(7.dp)

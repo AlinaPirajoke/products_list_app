@@ -48,7 +48,7 @@ fun ScreenTitle(
             ) {
                 Text(
                     text = text,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleMedium
                 )
                 if (subtitle != null) {

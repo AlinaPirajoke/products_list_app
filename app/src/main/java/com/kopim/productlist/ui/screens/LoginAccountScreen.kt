@@ -25,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -67,7 +66,7 @@ fun LoginAccountScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Column(
             modifier = Modifier
@@ -79,7 +78,6 @@ fun LoginAccountScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ScreenTitle(
-                modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.login_screen_title),
                 navigationIcon = {
                     BackNavigationButton(

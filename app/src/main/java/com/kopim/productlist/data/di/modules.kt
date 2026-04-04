@@ -116,7 +116,7 @@ private fun Module.viewmodel() {
         ListViewModel(get(), get())
     }
     viewModel<HomeFeedViewModel> {
-        HomeFeedViewModel(get(), get())
+        HomeFeedViewModel(get(), get(), get())
     }
     viewModel<JoinListByCodeViewModel> {
         JoinListByCodeViewModel(get())
