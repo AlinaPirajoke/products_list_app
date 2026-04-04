@@ -12,22 +12,28 @@ import com.kopim.productlist.data.model.datasource.CartsDataSource
 import com.kopim.productlist.data.model.datasource.CartsDataSourceInterface
 import com.kopim.productlist.data.model.datasource.ListDataSource
 import com.kopim.productlist.data.model.datasource.ListDataSourceInterface
+import com.kopim.productlist.data.model.profile.UserProfileRepository
+import com.kopim.productlist.data.model.profile.UserProfileRepositoryImpl
 import com.kopim.productlist.data.model.network.connections.carts.CartsNetworkConnection
 import com.kopim.productlist.data.model.network.connections.carts.CartsNetworkConnectionInterface
 import com.kopim.productlist.data.model.network.connections.fcm.FcmNetworkConnection
 import com.kopim.productlist.data.model.network.connections.fcm.FcmNetworkConnectionInterface
 import com.kopim.productlist.data.model.network.connections.list.ListNetworkConnection
 import com.kopim.productlist.data.model.network.connections.list.ListNetworkConnectionInterface
+import com.kopim.productlist.data.model.network.connections.user.UserProfileNetworkConnection
+import com.kopim.productlist.data.model.network.connections.user.UserProfileNetworkConnectionInterface
 import com.kopim.productlist.data.model.network.networksettings.apiservices.CartsApiService
 import com.kopim.productlist.data.model.network.networksettings.apiservices.ListApiService
 import com.kopim.productlist.data.model.network.networksettings.OkHttpClientHelper
 import com.kopim.productlist.data.model.network.networksettings.RetrofitHelper
 import com.kopim.productlist.data.model.network.networksettings.apiservices.FcmApiService
+import com.kopim.productlist.data.model.network.networksettings.apiservices.UserApiService
 import com.kopim.productlist.data.mvvm.editlist.EditListPort
 import com.kopim.productlist.data.mvvm.editlist.EditListViewModel
 import com.kopim.productlist.data.mvvm.homefeed.HomeFeedViewModel
 import com.kopim.productlist.data.mvvm.joinlist.JoinListByCodePort
 import com.kopim.productlist.data.mvvm.joinlist.JoinListByCodeViewModel
+import com.kopim.productlist.data.mvvm.loginaccount.LoginAccountViewModel
 import com.kopim.productlist.data.mvvm.list.ListCartMetadataPort
 import com.kopim.productlist.data.mvvm.list.ListViewModel
 import okhttp3.OkHttpClient
@@ -80,6 +86,20 @@ private fun Module.model(){
     single<FcmApiService> {
         RetrofitHelper.getFcmApiService(get())
     }
+    single<UserApiService> {
+        RetrofitHelper.getUserApiService(get())
+    }
+    single<UserProfileNetworkConnectionInterface> {
+        UserProfileNetworkConnection(get(), get())
+    }
+    single<UserProfileRepository> {
+        UserProfileRepositoryImpl(
+            get<AppDatabase>().userProfileDao(),
+            get(),
+            get(),
+            get(),
+        )
+    }
     single<AppDatabase> {
         DatabaseProvider.getDatabase(get())
     }
@@ -96,10 +116,13 @@ private fun Module.viewmodel() {
         ListViewModel(get(), get())
     }
     viewModel<HomeFeedViewModel> {
-        HomeFeedViewModel(get())
+        HomeFeedViewModel(get(), get())
     }
     viewModel<JoinListByCodeViewModel> {
         JoinListByCodeViewModel(get())
+    }
+    viewModel<LoginAccountViewModel> {
+        LoginAccountViewModel(get())
     }
     viewModel { (listId: Long) ->
         EditListViewModel(listId, get())

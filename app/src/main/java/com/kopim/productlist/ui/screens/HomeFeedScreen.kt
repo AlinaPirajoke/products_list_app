@@ -46,6 +46,7 @@ import com.kopim.productlist.ui.components.DefaultFab
 import com.kopim.productlist.ui.components.ListPreviewCard
 import com.kopim.productlist.ui.components.ScreenTitle
 import com.kopim.productlist.ui.navigation.JoinListByCodeNavPoint
+import com.kopim.productlist.ui.navigation.LoginAccountNavPoint
 import com.kopim.productlist.ui.theme.ProductsTheme
 import com.kopim.productlist.ui.theme.defaultHorizontalEdgePadding
 import com.kopim.productlist.ui.theme.homeFeedAddListSlotHeight
@@ -145,12 +146,18 @@ fun HomeFeedScreen(
                     visible = accountDrawerOpen,
                     state = state.account,
                     onDismiss = { accountDrawerOpen = false },
-                    onNameClick = vm::onAccountNameClick,
+                    onNameValueClick = vm::onAccountNameValueClick,
+                    onNameLabelClick = vm::onAccountNameLabelClick,
                     onNameDraftChange = vm::onAccountNameDraftChange,
+                    onPasswordMaskClick = vm::onAccountPasswordMaskClick,
                     onPasswordLabelClick = vm::onAccountPasswordLabelClick,
                     onPasswordDraftChange = vm::onAccountPasswordDraftChange,
                     onSubmitChanges = vm::onAccountSubmitChanges,
                     onColorChangeClick = vm::onAccountColorChangeRequest,
+                    onSwitchProfileClick = {
+                            accountDrawerOpen = false
+                            navigator.push(LoginAccountNavPoint)
+                    }
                 )
             }
         }

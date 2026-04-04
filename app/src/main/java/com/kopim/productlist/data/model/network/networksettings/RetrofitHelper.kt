@@ -3,6 +3,7 @@ package com.kopim.productlist.data.model.network.networksettings
 import com.kopim.productlist.data.model.network.networksettings.apiservices.CartsApiService
 import com.kopim.productlist.data.model.network.networksettings.apiservices.FcmApiService
 import com.kopim.productlist.data.model.network.networksettings.apiservices.ListApiService
+import com.kopim.productlist.data.model.network.networksettings.apiservices.UserApiService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,4 +26,7 @@ object RetrofitHelper {
 
     fun getCartsApiService(retrofit: Retrofit): CartsApiService =
         retrofit.create(CartsApiService::class.java)
+
+    fun getUserApiService(retrofit: Retrofit): UserApiService =
+        retrofit.create(UserApiService::class.java)
 }

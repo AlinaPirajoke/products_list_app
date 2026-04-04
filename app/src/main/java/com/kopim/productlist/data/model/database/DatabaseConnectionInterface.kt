@@ -41,4 +41,7 @@ interface DatabaseConnectionInterface {
     suspend fun getCarts(): List<ShortCartData>
 
     suspend fun updateCartFeedName(cartId: Long, name: String)
+
+    /** Полная очистка локальных данных сессии (корзины, товары, очереди изменений, профиль). */
+    suspend fun clearAllSessionData()
 }

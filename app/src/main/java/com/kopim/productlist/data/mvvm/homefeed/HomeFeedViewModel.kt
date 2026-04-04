@@ -2,42 +2,68 @@ package com.kopim.productlist.data.mvvm.homefeed
 
 import androidx.lifecycle.viewModelScope
 import com.kopim.productlist.data.model.datasource.CartsDataSourceInterface
+import com.kopim.productlist.data.model.profile.ProfileColorString
+import com.kopim.productlist.data.model.profile.UserProfileRepository
 import com.kopim.productlist.data.mvvm.BaseViewModel
 import com.kopim.productlist.ui.navigation.CartNavPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeFeedViewModel(val dataSource: CartsDataSourceInterface) : BaseViewModel() {
+class HomeFeedViewModel(
+    private val dataSource: CartsDataSourceInterface,
+    private val userProfileRepository: UserProfileRepository,
+) : BaseViewModel() {
     private val _state = MutableStateFlow(HomeFeedUiState())
     val state: StateFlow<HomeFeedUiState> = _state.asStateFlow()
 
+    private var cartsCollectJob: Job? = null
+
     init {
+        viewModelScope.launch {
+            userProfileRepository.profileFlow.collect { profile ->
+                _state.update { s ->
+                    s.copy(account = s.account.withSyncedProfile(profile))
+                }
+            }
+        }
+        viewModelScope.launch {
+            userProfileRepository.credentialsSignInEvents.collect {
+                refreshCarts()
+            }
+        }
+        viewModelScope.launch {
+            userProfileRepository.refreshFromServer()
+        }
+        viewModelScope.launch {
+            dataSource.cartsInvalidated.collect {
+                refreshCarts()
+            }
+        }
         refreshCarts()
     }
 
     fun onUpdateDate() {
         refreshCarts()
+        viewModelScope.launch {
+            userProfileRepository.refreshFromServer()
+        }
     }
 
     fun onNavigateToList(listId: Long) {
         navigate(CartNavPoint(listId))
     }
 
-    /** Заглушка: смена цвета профиля на сервере. */
     fun onAccountColorChangeRequest() {
         viewModelScope.launch {
-            _state.update { s ->
-                val a = s.account
-                val next = (a.profileColorIndex + 1) % AccountSidebarState.PROFILE_COLOR_COUNT
-                s.copy(account = a.copy(profileColorIndex = next))
-            }
+            userProfileRepository.updateProfileColor(ProfileColorString.randomOpaque())
         }
     }
 
-    fun onAccountNameClick() {
+    fun onAccountNameValueClick() {
         _state.update { s ->
             val a = s.account
             if (a.isNameEditing) s
@@ -50,23 +76,46 @@ class HomeFeedViewModel(val dataSource: CartsDataSourceInterface) : BaseViewMode
         }
     }
 
+    fun onAccountNameLabelClick() {
+        _state.update { s ->
+            val a = s.account
+            if (!a.isNameEditing) s
+            else s.copy(
+                account = a.copy(
+                    isNameEditing = false,
+                    nameDraft = a.displayName,
+                )
+            )
+        }
+    }
+
     fun onAccountNameDraftChange(value: String) {
         _state.update { it.copy(account = it.account.copy(nameDraft = value)) }
+    }
+
+    fun onAccountPasswordMaskClick() {
+        _state.update { s ->
+            val a = s.account
+            if (a.isPasswordEditing) s
+            else s.copy(
+                account = a.copy(
+                    isPasswordEditing = true,
+                    passwordDraft = "",
+                )
+            )
+        }
     }
 
     fun onAccountPasswordLabelClick() {
         _state.update { s ->
             val a = s.account
-            when {
-                a.isPasswordEditing -> s
-                !a.isPasswordRevealed -> s.copy(account = a.copy(isPasswordRevealed = true))
-                else -> s.copy(
-                    account = a.copy(
-                        isPasswordEditing = true,
-                        passwordDraft = a.password,
-                    )
+            if (!a.isPasswordEditing) s
+            else s.copy(
+                account = a.copy(
+                    isPasswordEditing = false,
+                    passwordDraft = "",
                 )
-            }
+            )
         }
     }
 
@@ -74,34 +123,44 @@ class HomeFeedViewModel(val dataSource: CartsDataSourceInterface) : BaseViewMode
         _state.update { it.copy(account = it.account.copy(passwordDraft = value)) }
     }
 
-    /** Заглушка: сохранение имени/пароля на сервере. */
+    fun onAccountSwitchProfileClick() {
+        viewModelScope.launch {
+            userProfileRepository.switchToAnotherProfile()
+            refreshCarts()
+        }
+    }
+
     fun onAccountSubmitChanges() {
         viewModelScope.launch {
+            val a = _state.value.account
+            var error: Throwable? = null
+            if (a.isNameEditing) {
+                userProfileRepository.updateDisplayName(a.nameDraft).onFailure { error = it }
+            }
+            if (error == null && a.isPasswordEditing && a.passwordDraft.isNotBlank()) {
+                userProfileRepository.changePassword(a.passwordDraft).onFailure { error = it }
+            }
+            if (error != null) return@launch
             _state.update { s ->
-                val a = s.account
-                var next = a
-                if (a.isNameEditing) {
-                    next = next.copy(displayName = a.nameDraft.trim().ifEmpty { a.displayName })
-                }
-                if (a.isPasswordEditing) {
-                    next = next.copy(password = a.passwordDraft)
-                }
-                next = next.copy(
-                    isNameEditing = false,
-                    isPasswordEditing = false,
-                    isPasswordRevealed = false,
-                    passwordDraft = "",
-                    nameDraft = next.displayName,
+                val acc = s.account
+                s.copy(
+                    account = acc.copy(
+                        isNameEditing = false,
+                        isPasswordEditing = false,
+                        passwordDraft = "",
+                        password = "",
+                        nameDraft = acc.displayName,
+                    )
                 )
-                s.copy(account = next)
             }
         }
     }
 
     private fun refreshCarts() {
-        viewModelScope.launch {
+        cartsCollectJob?.cancel()
+        cartsCollectJob = viewModelScope.launch {
             dataSource.getUserCarts().collect { lists ->
-                _state.value = _state.value.copy(lists = lists)
+                _state.update { it.copy(lists = lists) }
             }
         }
     }

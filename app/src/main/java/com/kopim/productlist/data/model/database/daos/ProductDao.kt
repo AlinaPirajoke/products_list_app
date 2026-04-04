@@ -22,4 +22,7 @@ interface ProductDao {
 
     @Upsert
     suspend fun upsertAll(products: List<ProductDbEntity>): List<Long>
+
+    @Query("DELETE FROM products")
+    suspend fun deleteAll()
 }

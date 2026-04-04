@@ -13,7 +13,11 @@ object DatabaseProvider {
                 AppDatabase::class.java,
                 "products_database"
             )
-                .addMigrations(DatabaseMigrations.MIGRATION_1_2)
+                .addMigrations(
+                    DatabaseMigrations.MIGRATION_1_2,
+                    DatabaseMigrations.MIGRATION_2_3,
+                    DatabaseMigrations.MIGRATION_3_4,
+                )
                 .build().also { INSTANCE = it }
         }
     }

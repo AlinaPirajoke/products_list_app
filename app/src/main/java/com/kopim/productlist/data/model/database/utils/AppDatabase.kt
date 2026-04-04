@@ -5,12 +5,14 @@ import androidx.room.RoomDatabase
 import com.kopim.productlist.data.model.database.daos.CartDao
 import com.kopim.productlist.data.model.database.daos.CartFeedCacheDao
 import com.kopim.productlist.data.model.database.daos.ListItemDao
+import com.kopim.productlist.data.model.database.daos.UserProfileDao
 import com.kopim.productlist.data.model.database.daos.LocalAdditionChangeDao
 import com.kopim.productlist.data.model.database.daos.LocalCheckChangeDao
 import com.kopim.productlist.data.model.database.daos.LocalRenameChangeDao
 import com.kopim.productlist.data.model.database.daos.ProductDao
 import com.kopim.productlist.data.model.database.entities.CartDbEntity
 import com.kopim.productlist.data.model.database.entities.CartFeedCacheEntity
+import com.kopim.productlist.data.model.database.entities.UserProfileEntity
 import com.kopim.productlist.data.model.database.entities.ListItemDbEntity
 import com.kopim.productlist.data.model.database.entities.ProductDbEntity
 import com.kopim.productlist.data.model.database.entities.changeentities.LocalAdditionChangeDbEntity
@@ -25,9 +27,10 @@ import com.kopim.productlist.data.model.database.entities.changeentities.LocalRe
         ListItemDbEntity::class,
         LocalAdditionChangeDbEntity::class,
         LocalCheckChangeDbEntity::class,
-        LocalRenameChangeDbEntity::class
+        LocalRenameChangeDbEntity::class,
+        UserProfileEntity::class,
                ],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -38,4 +41,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun localAdditionChangeDao(): LocalAdditionChangeDao
     abstract fun localCheckChangeDao(): LocalCheckChangeDao
     abstract fun localRenameChangeDao(): LocalRenameChangeDao
+    abstract fun userProfileDao(): UserProfileDao
 }

@@ -23,6 +23,7 @@ open class BaseNetworkConnection(
     }
 
     protected suspend fun checkLogin(): Boolean {
+        token = spm.userToken
         if (token == null) {
             Log.w(TAG, "User's token is null!")
             return loginUser()

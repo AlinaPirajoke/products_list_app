@@ -18,6 +18,9 @@ interface ListItemDao {
     @Query("DELETE FROM list_items WHERE cart = :cartId")
     suspend fun cleanCart(cartId: Long)
 
+    @Query("DELETE FROM list_items")
+    suspend fun deleteAll()
+
     @Query("""SELECT 
             li.id as id,
             li.checked as checked,

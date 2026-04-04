@@ -1,5 +1,7 @@
 *.iml
 .gradle
+# Local agent context (see D:\neurodata\agent_instructions_main.txt)
+agentdata.md
 app/google-services.json
 /local.properties
 /.idea/caches

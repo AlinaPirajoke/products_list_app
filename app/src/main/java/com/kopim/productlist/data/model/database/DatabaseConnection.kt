@@ -3,6 +3,7 @@ package com.kopim.productlist.data.model.database
 import android.util.Log
 import com.kopim.productlist.data.model.database.entities.CartDbEntity
 import com.kopim.productlist.data.model.database.entities.CartFeedCacheEntity
+import androidx.room.withTransaction
 import com.kopim.productlist.data.model.database.utils.AppDatabase
 import com.kopim.productlist.data.model.database.utils.CartFeedPreviewJson
 import com.kopim.productlist.data.utils.Hint
@@ -128,6 +129,19 @@ class DatabaseConnection(val database: AppDatabase) : DatabaseConnectionInterfac
 
     override suspend fun updateCartFeedName(cartId: Long, name: String) {
         database.cartFeedCacheDao().updateName(cartId, name)
+    }
+
+    override suspend fun clearAllSessionData() {
+        database.withTransaction {
+            database.listItemDao().deleteAll()
+            database.cartDao().deleteAll()
+            database.productDao().deleteAll()
+            database.cartFeedCacheDao().deleteAll()
+            database.localAdditionChangeDao().cleanChanges()
+            database.localCheckChangeDao().cleanChanges()
+            database.localRenameChangeDao().cleanChanges()
+            database.userProfileDao().clear()
+        }
     }
 }
 
