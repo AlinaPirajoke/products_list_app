@@ -22,6 +22,8 @@
     <string name="edit_list_code_label">Код списка</string>
     <string name="edit_list_code_placeholder">Код появится после загрузки</string>
     <string name="edit_list_leave">Выйти из списка</string>
+    <string name="edit_list_members_label">Участники</string>
+    <string name="content_desc_member_color">Цвет участника</string>
 
     <string name="content_desc_back">Назад</string>
     <string name="content_desc_open_list_settings">Настройки списка</string>

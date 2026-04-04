@@ -1,13 +1,18 @@
 package com.kopim.productlist.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -21,8 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.core.graphics.toColorInt
+import com.kopim.productlist.data.model.profile.ProfileColorString
+import com.kopim.productlist.data.mvvm.editlist.CartMemberRow
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -107,6 +119,20 @@ fun EditListScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
+                if (state.members.isNotEmpty()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = stringResource(R.string.edit_list_members_label),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            state.members.forEach { member ->
+                                CartMemberRowView(member = member)
+                            }
+                        }
+                    }
+                }
                 state.errorMessage?.let { msg ->
                     Text(
                         text = msg,
@@ -129,6 +155,37 @@ fun EditListScreen(
         }
     }
 }
+
+@Composable
+private fun CartMemberRowView(member: CartMemberRow) {
+    val colorDotDesc = stringResource(R.string.content_desc_member_color)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        val dotColor = member.profileColor.toParticipantDotColor()
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .background(dotColor, CircleShape)
+                .semantics { contentDescription = colorDotDesc }
+        )
+        Text(
+            text = member.displayName,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+private fun String.toParticipantDotColor(): Color =
+    try {
+        Color(trim().toColorInt())
+    } catch (_: IllegalArgumentException) {
+        Color(ProfileColorString.DEFAULT.toColorInt())
+    }
 
 @Preview(showBackground = true)
 @Composable
@@ -179,6 +236,19 @@ private fun EditListScreenPreview() {
                             text = "QWERTY",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            text = stringResource(R.string.edit_list_members_label),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        CartMemberRowView(
+                            CartMemberRow(displayName = "Анна", profileColor = ProfileColorString.normalizeOrDefault("#FFE91E63"))
+                        )
+                        CartMemberRowView(
+                            CartMemberRow(displayName = "Борис", profileColor = ProfileColorString.normalizeOrDefault("#FF2196F3"))
                         )
                     }
                     TextButton(

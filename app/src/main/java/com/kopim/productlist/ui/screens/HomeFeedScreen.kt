@@ -45,6 +45,7 @@ import com.kopim.productlist.ui.components.AddNewListButton
 import com.kopim.productlist.ui.components.DefaultFab
 import com.kopim.productlist.ui.components.ListPreviewCard
 import com.kopim.productlist.ui.components.ScreenTitle
+import com.kopim.productlist.ui.navigation.HomeFeedNavPoint
 import com.kopim.productlist.ui.navigation.JoinListByCodeNavPoint
 import com.kopim.productlist.ui.navigation.LoginAccountNavPoint
 import com.kopim.productlist.ui.theme.ProductsTheme
@@ -78,6 +79,12 @@ fun HomeFeedScreen(
                 is NavCommand.Pop -> navigator.pop()
                 is NavCommand.PopMultiple -> repeat(cmd.count) { navigator.pop() }
             }
+        }
+    }
+
+    LaunchedEffect(navigator.lastItem) {
+        if (navigator.lastItem is HomeFeedNavPoint) {
+            vm.onHomeFeedBecameTop()
         }
     }
 

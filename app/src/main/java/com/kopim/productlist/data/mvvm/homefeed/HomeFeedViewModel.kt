@@ -53,6 +53,11 @@ class HomeFeedViewModel(
         }
     }
 
+    /** Вызывать, когда главный экран снова стал вершиной стека навигации (возврат с корзины и др.). */
+    fun onHomeFeedBecameTop() {
+        refreshCarts()
+    }
+
     fun onNavigateToList(listId: Long) {
         navigate(CartNavPoint(listId))
     }

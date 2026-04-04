@@ -5,7 +5,7 @@ package com.kopim.productlist.data.mvvm.editlist
  */
 object EditListPortStub : EditListPort {
     override suspend fun loadEditState(listId: Long): Result<EditListDraft> =
-        Result.success(EditListDraft(title = "", shareCode = ""))
+        Result.success(EditListDraft(title = "", shareCode = "", members = emptyList()))
 
     override suspend fun updateTitle(listId: Long, title: String): Result<Unit> = Result.success(Unit)
 

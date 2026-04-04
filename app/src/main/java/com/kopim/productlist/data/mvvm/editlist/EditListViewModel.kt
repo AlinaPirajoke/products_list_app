@@ -36,6 +36,7 @@ class EditListViewModel(
                         it.copy(
                             listTitle = draft.title,
                             shareCode = draft.shareCode,
+                            members = draft.members,
                             isLoading = false
                         )
                     }
